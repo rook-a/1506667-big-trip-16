@@ -1,15 +1,17 @@
-const createOfferTemplate = (arr) => `<ul class="event__selected-offers">
-  ${arr.map(({title, price}) => `<li class="event__offer">
+import {createElement} from '../render.js';
+
+const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
+  ${offers.map(({title, price}) => `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${price}</span>
   </li>`).join('')}
 </ul>`;
 
-export const createPointTemplate = (obj) => {
-  const {type, price, destination, offer, date, timeStart, timeEnd} = obj;
+const createPointTemplate = (point) => {
+  const {type, price, destination, offer, date, timeStart, timeEnd} = point;
 
-  const favoriteClassName = obj.isFavorite ? 'event__favorite-btn--active' : '';
+  const favoriteClassName = point.isFavorite ? 'event__favorite-btn--active' : '';
   const offerTemplate = offer.length ? createOfferTemplate(offer) : '';
 
   return `<li class="trip-events__item">
@@ -44,3 +46,28 @@ export const createPointTemplate = (obj) => {
             </div>
           </li>`;
 };
+
+export default class CreatePoint {
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createPointTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

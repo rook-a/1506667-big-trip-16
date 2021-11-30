@@ -29,6 +29,7 @@ const generateDate = () => {
 
   const day = dayjs().add(daysGap, 'day').toDate();
   const dayFormat = dayjs(day).format('MMM D');
+  const dayFullFormat = dayjs(day).format('DD/MM/YY');
 
   const TIME_GAP = 30;
   const timesGap = getRandomInteger(-TIME_GAP, TIME_GAP);
@@ -48,7 +49,7 @@ const generateDate = () => {
    * const totalMins = dayjs().minute(mins).$m
    */
 
-  return [dayFormat, dayTimeStart, dayTimeEnd];
+  return {dayFormat, dayFullFormat, dayTimeStart, dayTimeEnd};
 };
 
 export const generatePoint = () => ({
@@ -58,9 +59,10 @@ export const generatePoint = () => ({
     description: generateElement(DESCRIPTIONS),
     pictures: getRandomElements(createPhotos()),
   },
-  date: generateDate()[0],
-  timeStart: generateDate()[1],
-  timeEnd: generateDate()[2],
+  date: generateDate().dayFormat,
+  dateFull: generateDate().dayFullFormat,
+  timeStart: generateDate().dayTimeStart,
+  timeEnd: generateDate().dayTimeEnd,
   price: getRandomInteger(PRICE_FROM, PRICE_TO),
   offer: getRandomElements(OFFERS),
   isFavorite: Boolean(getRandomInteger(0, 1)),

@@ -1,13 +1,15 @@
-const createPictureTemplate = (arr) => `<div class="event__photos-container">
+import {createElement} from '../render.js';
+
+const createPictureTemplate = (pictures) => `<div class="event__photos-container">
     <div class="event__photos-tape">
-      ${arr.map((src) => `<img class="event__photo" src="${src}" alt="Event photo"></img>`).join('')}
+      ${pictures.map((src) => `<img class="event__photo" src="${src}" alt="Event photo"></img>`).join('')}
     </div>
   </div>`;
 
-const createOfferTemplate = (arr) => `<section class="event__section  event__section--offers">
+const createOfferTemplate = (offers) => `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
-        ${arr.map(({id, title, price}) => `<div class="event__offer-selector">
+        ${offers.map(({id, title, price}) => `<div class="event__offer-selector">
           <input class="event__offer-checkbox  visually-hidden" id="${id}-1" type="checkbox" name="${id}" checked>
           <label class="event__offer-label" for="${id}-1">
             <span class="event__offer-title">${title}</span>
@@ -18,17 +20,8 @@ const createOfferTemplate = (arr) => `<section class="event__section  event__sec
       </div>
   </section>`;
 
-export const createNewPointTemplate = (obj = {}) => {
-  const {
-    type = 'Flight',
-    price = '',
-    destination = {
-      name: 'Geneva',
-      description: 'Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.',
-      pictures: [],
-    },
-    offer = [],
-  } = obj;
+const createNewPointTemplate = (point) => {
+  const {type, price, destination, offer, dateFull, timeStart} = point;
 
   const offerTemplate = offer.length ? createOfferTemplate(offer) : '';
   const pictureTemplate = destination.pictures ? createPictureTemplate(destination.pictures) : '';
@@ -109,10 +102,10 @@ export const createNewPointTemplate = (obj = {}) => {
 
                 <div class="event__field-group  event__field-group--time">
                   <label class="visually-hidden" for="event-start-time-1">From</label>
-                  <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+                  <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFull} ${timeStart}">
                   &mdash;
                   <label class="visually-hidden" for="event-end-time-1">To</label>
-                  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+                  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFull} ${timeStart}">
                 </div>
 
                 <div class="event__field-group  event__field-group--price">
@@ -139,3 +132,28 @@ export const createNewPointTemplate = (obj = {}) => {
             </form>
           </li>`;
 };
+
+export default class CreateNewPoint {
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createNewPointTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
