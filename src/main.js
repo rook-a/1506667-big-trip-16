@@ -12,8 +12,8 @@ import {createSortTemplate} from './view/sort-view.js';
 import {createListPointsTemplate} from './view/list-point-view.js';
 
 import {createNewPointTemplate} from './view/new-point-view.js';
-//import {createPointWithoutOffersTemplate} from './view/new-point-without-destination-view.js';
-//import {createPointWithoutDestinationTemplate} from './view/new-point-without-offers-view.js';
+// import {createPointWithoutOffersTemplate} from './view/new-point-without-destination-view.js';
+// import {createPointWithoutDestinationTemplate} from './view/new-point-without-offers-view.js';
 
 import {createEditPointTemplate} from './view/edit-point-view.js';
 

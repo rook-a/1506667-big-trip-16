@@ -18,17 +18,8 @@ const createOfferTemplate = (arr) => `<section class="event__section  event__sec
       </div>
   </section>`;
 
-export const createNewPointTemplate = (obj = {}) => {
-  const {
-    type = 'Flight',
-    price = '',
-    destination = {
-      name: 'Geneva',
-      description: 'Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.',
-      pictures: [],
-    },
-    offer = [],
-  } = obj;
+export const createNewPointTemplate = (point) => {
+  const {type, price, destination, offer, dateFull, timeStart} = point;
 
   const offerTemplate = offer.length ? createOfferTemplate(offer) : '';
   const pictureTemplate = destination.pictures ? createPictureTemplate(destination.pictures) : '';
@@ -109,10 +100,10 @@ export const createNewPointTemplate = (obj = {}) => {
 
                 <div class="event__field-group  event__field-group--time">
                   <label class="visually-hidden" for="event-start-time-1">From</label>
-                  <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+                  <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFull} ${timeStart}">
                   &mdash;
                   <label class="visually-hidden" for="event-end-time-1">To</label>
-                  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+                  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFull} ${timeStart}">
                 </div>
 
                 <div class="event__field-group  event__field-group--price">

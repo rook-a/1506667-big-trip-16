@@ -1,12 +1,5 @@
-export const createPointWithoutOffersTemplate = (obj = {}) => {
-  const {
-    type = 'Flight',
-    price = '',
-    destination = {
-      name: 'Geneva',
-      description: 'Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.',
-    },
-  } = obj;
+export const createPointWithoutOffersTemplate = (point) => {
+  const {type, price, destination} = point;
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
