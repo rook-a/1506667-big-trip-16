@@ -1,4 +1,6 @@
-export const createEditPointTemplate = (point) => {
+import {createElement} from '../render.js';
+
+const createEditPointTemplate = (point) => {
   const {type, price, destination, dateFull, timeStart} = point;
 
   // console.log(offer);
@@ -170,3 +172,28 @@ export const createEditPointTemplate = (point) => {
             </form>
           </li>`;
 };
+
+export default class CreateEditPoint {
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createEditPointTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

@@ -1,6 +1,7 @@
 import {FILTERS} from '../const.js';
+import {createElement} from '../render.js';
 
-export const createFiltersTemplate = (defaultFilter) => (
+const createFiltersTemplate = (defaultFilter) => (
   `<form class="trip-filters" action="#" method="get">
 
     ${FILTERS.map((filter) => `<div class="trip-filters__filter">
@@ -17,3 +18,28 @@ export const createFiltersTemplate = (defaultFilter) => (
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form>`
 );
+
+export default class CreateFilters {
+  #element = null;
+  #defaultFilter = null;
+
+  constructor(defaultFilter) {
+    this.#defaultFilter = defaultFilter;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createFiltersTemplate(this.#defaultFilter);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

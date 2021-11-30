@@ -1,6 +1,7 @@
 import {SORTING} from '../const.js';
+import {createElement} from '../render.js';
 
-export const createSortTemplate = (defaultSort) => (
+const createSortTemplate = (defaultSort) => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
 
     ${SORTING.map((item) => `<div class="trip-sort__item  trip-sort__item--${item}">
@@ -20,3 +21,28 @@ export const createSortTemplate = (defaultSort) => (
 
   </form>`
 );
+
+export default class CreateSort {
+  #element = null;
+  #defaultSort = null;
+
+  constructor(defaultSort) {
+    this.#defaultSort = defaultSort;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createSortTemplate(this.#defaultSort);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

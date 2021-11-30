@@ -1,3 +1,5 @@
+import {createElement} from '../render.js';
+
 const createPictureTemplate = (pictures) => `<div class="event__photos-container">
     <div class="event__photos-tape">
       ${pictures.map((src) => `<img class="event__photo" src="${src}" alt="Event photo"></img>`).join('')}
@@ -18,7 +20,7 @@ const createOfferTemplate = (offers) => `<section class="event__section  event__
       </div>
   </section>`;
 
-export const createNewPointTemplate = (point) => {
+const createNewPointTemplate = (point) => {
   const {type, price, destination, offer, dateFull, timeStart} = point;
 
   const offerTemplate = offer.length ? createOfferTemplate(offer) : '';
@@ -130,3 +132,28 @@ export const createNewPointTemplate = (point) => {
             </form>
           </li>`;
 };
+
+export default class CreateNewPoint {
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createNewPointTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
