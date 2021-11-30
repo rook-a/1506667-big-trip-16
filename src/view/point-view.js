@@ -1,15 +1,15 @@
-const createOfferTemplate = (arr) => `<ul class="event__selected-offers">
-  ${arr.map(({title, price}) => `<li class="event__offer">
+const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
+  ${offers.map(({title, price}) => `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${price}</span>
   </li>`).join('')}
 </ul>`;
 
-export const createPointTemplate = (obj) => {
-  const {type, price, destination, offer, date, timeStart, timeEnd} = obj;
+export const createPointTemplate = (point) => {
+  const {type, price, destination, offer, date, timeStart, timeEnd} = point;
 
-  const favoriteClassName = obj.isFavorite ? 'event__favorite-btn--active' : '';
+  const favoriteClassName = point.isFavorite ? 'event__favorite-btn--active' : '';
   const offerTemplate = offer.length ? createOfferTemplate(offer) : '';
 
   return `<li class="trip-events__item">

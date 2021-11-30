@@ -1,13 +1,13 @@
-const createPictureTemplate = (arr) => `<div class="event__photos-container">
+const createPictureTemplate = (pictures) => `<div class="event__photos-container">
     <div class="event__photos-tape">
-      ${arr.map((src) => `<img class="event__photo" src="${src}" alt="Event photo"></img>`).join('')}
+      ${pictures.map((src) => `<img class="event__photo" src="${src}" alt="Event photo"></img>`).join('')}
     </div>
   </div>`;
 
-const createOfferTemplate = (arr) => `<section class="event__section  event__section--offers">
+const createOfferTemplate = (offers) => `<section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
     <div class="event__available-offers">
-        ${arr.map(({id, title, price}) => `<div class="event__offer-selector">
+        ${offers.map(({id, title, price}) => `<div class="event__offer-selector">
           <input class="event__offer-checkbox  visually-hidden" id="${id}-1" type="checkbox" name="${id}" checked>
           <label class="event__offer-label" for="${id}-1">
             <span class="event__offer-title">${title}</span>
