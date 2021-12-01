@@ -52,21 +52,28 @@ const generateDate = () => {
   return {dayFormat, dayFullFormat, dayTimeStart, dayTimeEnd};
 };
 
-export const generatePoint = () => ({
-  type: generateElement(TYPES),
-  destination: {
-    name: generateElement(DESTINATIONS),
-    description: generateElement(DESCRIPTIONS),
-    pictures: getRandomElements(createPhotos()),
-  },
-  date: generateDate().dayFormat,
-  dateFull: generateDate().dayFullFormat,
-  timeStart: generateDate().dayTimeStart,
-  timeEnd: generateDate().dayTimeEnd,
-  price: getRandomInteger(PRICE_FROM, PRICE_TO),
-  offer: getRandomElements(OFFERS),
-  isFavorite: Boolean(getRandomInteger(0, 1)),
-});
+export const generatePoint = () => {
+  const date = generateDate().dayFormat;
+  const dateFullFormat = generateDate().dayFullFormat;
+  const timeStart = generateDate().dayTimeStart;
+  const timeEnd = generateDate().dayTimeEnd;
+
+  return {
+    type: generateElement(TYPES),
+    destination: {
+      name: generateElement(DESTINATIONS),
+      description: generateElement(DESCRIPTIONS),
+      pictures: getRandomElements(createPhotos()),
+    },
+    date,
+    dateFullFormat,
+    timeStart,
+    timeEnd,
+    price: getRandomInteger(PRICE_FROM, PRICE_TO),
+    offer: getRandomElements(OFFERS),
+    isFavorite: Boolean(getRandomInteger(0, 1)),
+  };
+};
 
 
 //console.log(generatePoint());

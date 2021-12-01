@@ -9,6 +9,7 @@ import CreateFilters from './view/filter-view.js';
 import {RenderPosition, render} from './render.js';
 
 import CreateSort from './view/sort-view.js';
+import CreateNoPointMessage from './view/no-point-message-view.js';
 
 // import CreateNewPoint from './view/new-point-view.js';
 // import {createPointWithoutOffersTemplate} from './view/new-point-without-destination-view.js';
@@ -75,39 +76,43 @@ const renderPoint = (listPointContainer, point) => {
 
 render(tripInfoContainer, new CreateTripInfo().getElement, RenderPosition.AFTERBEGIN);
 render(siteMenuContainer, new CreateSiteMenu(DEFAULT_VALUE.menu).getElement, RenderPosition.BEFOREEND);
-render(tripFiltersContainer, new CreateFilters(DEFAULT_VALUE.filter).getElement, RenderPosition.BEFOREEND);
-
-render(tripEventsContainer, new CreateSort(DEFAULT_VALUE.sorting).getElement, RenderPosition.BEFOREEND);
 
 
-render(tripEventsContainer, new ListPoinView().getElement, RenderPosition.BEFOREEND);
+if (tasks.length === 0) {
+  render(tripEventsContainer, new CreateNoPointMessage().getElement, RenderPosition.BEFOREEND);
+} else {
+  render(tripFiltersContainer, new CreateFilters(DEFAULT_VALUE.filter).getElement, RenderPosition.BEFOREEND);
+  render(tripEventsContainer, new CreateSort(DEFAULT_VALUE.sorting).getElement, RenderPosition.BEFOREEND);
 
-const listPointsContainer = document.querySelector('.trip-events__list');
+  render(tripEventsContainer, new ListPoinView().getElement, RenderPosition.BEFOREEND);
 
-// render(listPointsContainer, new CreateEditPoint(tasks[0]).element, RenderPosition.AFTERBEGIN);
-// renderElement(listPointsContainer, new CreateNewPoint(tasks[1]).getElement, RenderPosition.BEFOREEND);
-// renderTemplate(listPointsContainer, createPointWithoutOffersTemplate(tasks[2]), RenderPosition.BEFOREEND);
-// renderTemplate(listPointsContainer, createPointWithoutDestinationTemplate(tasks[3]), RenderPosition.BEFOREEND);
+  const listPointsContainer = document.querySelector('.trip-events__list');
 
-for (let i = 0; i < TASK_COUNT; i++) {
-  renderPoint(listPointsContainer, tasks[i]);
+  // render(listPointsContainer, new CreateEditPoint(tasks[0]).element, RenderPosition.AFTERBEGIN);
+  // renderElement(listPointsContainer, new CreateNewPoint(tasks[1]).getElement, RenderPosition.BEFOREEND);
+  // renderTemplate(listPointsContainer, createPointWithoutOffersTemplate(tasks[2]), RenderPosition.BEFOREEND);
+  // renderTemplate(listPointsContainer, createPointWithoutDestinationTemplate(tasks[3]), RenderPosition.BEFOREEND);
+
+  for (let i = 0; i < TASK_COUNT; i++) {
+    renderPoint(listPointsContainer, tasks[i]);
+  }
+
+  //в качестве теста
+  flatpickr('#event-start-time-1', {
+    enableTime: true,
+    altInput: true,
+    // eslint-disable-next-line camelcase
+    time_24hr: true,
+    altFormat: 'd/m/y H:i',
+    dateFormat: 'd-m-Y H:i',
+  });
+
+  flatpickr('#event-end-time-1', {
+    enableTime: true,
+    altInput: true,
+    // eslint-disable-next-line camelcase
+    time_24hr: true,
+    altFormat: 'd/m/y H:i',
+    dateFormat: 'd-m-Y H:i',
+  });
 }
-
-//в качестве теста
-flatpickr('#event-start-time-1', {
-  enableTime: true,
-  altInput: true,
-  // eslint-disable-next-line camelcase
-  time_24hr: true,
-  altFormat: 'd/m/y H:i',
-  dateFormat: 'd-m-Y H:i',
-});
-
-flatpickr('#event-end-time-1', {
-  enableTime: true,
-  altInput: true,
-  // eslint-disable-next-line camelcase
-  time_24hr: true,
-  altFormat: 'd/m/y H:i',
-  dateFormat: 'd-m-Y H:i',
-});
