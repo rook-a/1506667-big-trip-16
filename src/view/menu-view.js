@@ -17,15 +17,15 @@ export default class CreateSiteMenu {
     this.#defaultTab = defaultTab;
   }
 
-  get element() {
+  get getElement() {
     if (!this.#element) {
-      this.#element = createElement(this.template);
+      this.#element = createElement(this.getTemplate);
     }
 
     return this.#element;
   }
 
-  get template() {
+  get getTemplate() {
     return createSiteMenuTemplate(this.#defaultTab);
   }
 

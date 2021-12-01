@@ -181,15 +181,15 @@ export default class CreateEditPoint {
     this.#point = point;
   }
 
-  get element() {
+  get getElement() {
     if (!this.#element) {
-      this.#element = createElement(this.template);
+      this.#element = createElement(this.getTemplate);
     }
 
     return this.#element;
   }
 
-  get template() {
+  get getTemplate() {
     return createEditPointTemplate(this.#point);
   }
 

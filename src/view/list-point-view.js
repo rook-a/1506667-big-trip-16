@@ -8,15 +8,15 @@ const createListPointsTemplate = () => (
 export default class ListPoinView {
   #element = null;
 
-  get element() {
+  get getElement() {
     if (!this.#element) {
-      this.#element = createElement(this.template);
+      this.#element = createElement(this.getTemplate);
     }
 
     return this.#element;
   }
 
-  get template() {
+  get getTemplate() {
     return createListPointsTemplate();
   }
 

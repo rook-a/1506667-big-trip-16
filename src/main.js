@@ -39,38 +39,38 @@ const renderPoint = (listPointContainer, point) => {
   const pointEditComponent = new CreateEditPoint(point);
 
   const replacePointToForm = () => {
-    listPointContainer.replaceChild(pointEditComponent.element, pointComponent.element);
+    listPointContainer.replaceChild(pointEditComponent.getElement, pointComponent.getElement);
   };
 
   const replaceFormToPoint = () => {
-    listPointContainer.replaceChild(pointComponent.element, pointEditComponent.element);
+    listPointContainer.replaceChild(pointComponent.getElement, pointEditComponent.getElement);
   };
 
-  pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.getElement.querySelector('.event__rollup-btn').addEventListener('click', () => {
     replacePointToForm();
   });
 
-  pointEditComponent.element.querySelector('.event--edit').addEventListener('submit', (evt) => {
+  pointEditComponent.getElement.querySelector('.event--edit').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToPoint();
   });
 
-  render(listPointContainer, pointComponent.element, RenderPosition.BEFOREEND);
+  render(listPointContainer, pointComponent.getElement, RenderPosition.BEFOREEND);
 };
 
-render(tripInfoContainer, new CreateTripInfo().element, RenderPosition.AFTERBEGIN);
-render(siteMenuContainer, new CreateSiteMenu(DEFAULT_VALUE.menu).element, RenderPosition.BEFOREEND);
-render(tripFiltersContainer, new CreateFilters(DEFAULT_VALUE.filter).element, RenderPosition.BEFOREEND);
+render(tripInfoContainer, new CreateTripInfo().getElement, RenderPosition.AFTERBEGIN);
+render(siteMenuContainer, new CreateSiteMenu(DEFAULT_VALUE.menu).getElement, RenderPosition.BEFOREEND);
+render(tripFiltersContainer, new CreateFilters(DEFAULT_VALUE.filter).getElement, RenderPosition.BEFOREEND);
 
-render(tripEventsContainer, new CreateSort(DEFAULT_VALUE.sorting).element, RenderPosition.BEFOREEND);
+render(tripEventsContainer, new CreateSort(DEFAULT_VALUE.sorting).getElement, RenderPosition.BEFOREEND);
 
 
-render(tripEventsContainer, new ListPoinView().element, RenderPosition.BEFOREEND);
+render(tripEventsContainer, new ListPoinView().getElement, RenderPosition.BEFOREEND);
 
 const listPointsContainer = document.querySelector('.trip-events__list');
 
 // render(listPointsContainer, new CreateEditPoint(tasks[0]).element, RenderPosition.AFTERBEGIN);
-// renderElement(listPointsContainer, new CreateNewPoint(tasks[1]).element, RenderPosition.BEFOREEND);
+// renderElement(listPointsContainer, new CreateNewPoint(tasks[1]).getElement, RenderPosition.BEFOREEND);
 // renderTemplate(listPointsContainer, createPointWithoutOffersTemplate(tasks[2]), RenderPosition.BEFOREEND);
 // renderTemplate(listPointsContainer, createPointWithoutDestinationTemplate(tasks[3]), RenderPosition.BEFOREEND);
 
