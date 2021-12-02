@@ -30,15 +30,15 @@ export default class CreateSort {
     this.#defaultSort = defaultSort;
   }
 
-  get element() {
+  get getElement() {
     if (!this.#element) {
-      this.#element = createElement(this.template);
+      this.#element = createElement(this.getTemplate);
     }
 
     return this.#element;
   }
 
-  get template() {
+  get getTemplate() {
     return createSortTemplate(this.#defaultSort);
   }
 
