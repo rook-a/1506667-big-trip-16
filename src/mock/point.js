@@ -1,10 +1,10 @@
-import {getRandomInteger} from '../utils.js';
-import {generateElement} from '../utils.js';
-import {getRandomElements} from '../utils.js';
-import {OFFERS} from '../const.js';
-import {TYPES} from '../const.js';
-import {DESTINATIONS} from '../const.js';
-import {DESCRIPTIONS} from '../const.js';
+import {getRandomInteger} from '../utils/utils.js';
+import {generateElement} from '../utils/utils.js';
+import {getRandomElements} from '../utils/utils.js';
+import {OFFERS} from '../utils/const.js';
+import {TYPES} from '../utils/const.js';
+import {DESTINATIONS} from '../utils/const.js';
+import {DESCRIPTIONS} from '../utils/const.js';
 import dayjs from 'dayjs';
 
 const PRICE_FROM = 0;

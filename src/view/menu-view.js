@@ -1,5 +1,5 @@
-import {MENU_TABS} from '../const.js';
-import {createElement} from '../render.js';
+import {MENU_TABS} from '../utils/const.js';
+import AbstractView from './abstract-view.js';
 
 const createSiteMenuTemplate = (defaultTab) => (
   `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -9,27 +9,16 @@ const createSiteMenuTemplate = (defaultTab) => (
   </nav>`
 );
 
-export default class CreateSiteMenu {
-  #element = null;
+export default class CreateSiteMenu extends AbstractView {
   #defaultTab = null;
 
   constructor(defaultTab) {
+    super();
     this.#defaultTab = defaultTab;
-  }
-
-  get getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate);
-    }
-
-    return this.#element;
   }
 
   get getTemplate() {
     return createSiteMenuTemplate(this.#defaultTab);
   }
 
-  removeElement() {
-    this.#element = null;
-  }
 }
