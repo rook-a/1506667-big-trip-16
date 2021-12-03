@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view.js';
 
 const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
   ${offers.map(({title, price}) => `<li class="event__offer">
@@ -47,27 +47,25 @@ const createPointTemplate = (point) => {
           </li>`;
 };
 
-export default class CreatePoint {
-  #element = null;
+export default class CreatePoint extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
-  }
-
-  get getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate);
-    }
-
-    return this.#element;
   }
 
   get getTemplate() {
     return createPointTemplate(this.#point);
   }
 
-  removeElement() {
-    this.#element = null;
+  setOnPointClick = (callback) => {
+    this._callback.pointClick = callback;
+    this.getElement.querySelector('.event__rollup-btn').addEventListener('click', this.#pointClick);
+  }
+
+  #pointClick = (evt) => {
+    evt.preventDefault();
+    this._callback.pointClick();
   }
 }

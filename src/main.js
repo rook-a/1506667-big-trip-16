@@ -6,14 +6,10 @@ import ListPoinView from './view/list-point-view.js';
 import CreateTripInfo from './view/trip-info-view.js';
 import CreateSiteMenu from './view/menu-view.js';
 import CreateFilters from './view/filter-view.js';
-import {RenderPosition, render} from './render.js';
+import {RenderPosition, render, replace} from './utils/render.js';
 
 import CreateSort from './view/sort-view.js';
 import CreateNoPointMessage from './view/no-point-message-view.js';
-
-// import CreateNewPoint from './view/new-point-view.js';
-// import {createPointWithoutOffersTemplate} from './view/new-point-without-destination-view.js';
-// import {createPointWithoutDestinationTemplate} from './view/new-point-without-offers-view.js';
 
 import CreateEditPoint from './view/edit-point-view.js';
 
@@ -21,7 +17,7 @@ import CreatePoint from './view/point-view.js';
 
 import {generatePoint} from './mock/point.js';
 //import {generateFilter} from './mock/filter.js';
-import {DEFAULT_VALUE} from './const.js';
+import {DEFAULT_VALUE} from './utils/const.js';
 
 const TASK_COUNT = 20;
 
@@ -40,11 +36,11 @@ const renderPoint = (listPointContainer, point) => {
   const pointEditComponent = new CreateEditPoint(point);
 
   const replacePointToForm = () => {
-    listPointContainer.replaceChild(pointEditComponent.getElement, pointComponent.getElement);
+    replace(pointEditComponent, pointComponent);
   };
 
   const replaceFormToPoint = () => {
-    listPointContainer.replaceChild(pointComponent.getElement, pointEditComponent.getElement);
+    replace(pointComponent, pointEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -55,43 +51,37 @@ const renderPoint = (listPointContainer, point) => {
     }
   };
 
-  pointComponent.getElement.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setOnPointClick(() => {
     replacePointToForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement.querySelector('.event--edit').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  pointEditComponent.setOnFormSubmit(() => {
     replaceFormToPoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointEditComponent.setOnEditPointClick(() => {
     replaceFormToPoint();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  render(listPointContainer, pointComponent.getElement, RenderPosition.BEFOREEND);
+  render(listPointContainer, pointComponent, RenderPosition.BEFOREEND);
 };
 
-render(tripInfoContainer, new CreateTripInfo().getElement, RenderPosition.AFTERBEGIN);
-render(siteMenuContainer, new CreateSiteMenu(DEFAULT_VALUE.menu).getElement, RenderPosition.BEFOREEND);
+render(tripInfoContainer, new CreateTripInfo(), RenderPosition.AFTERBEGIN);
+render(siteMenuContainer, new CreateSiteMenu(DEFAULT_VALUE.menu), RenderPosition.BEFOREEND);
 
 
 if (tasks.length === 0) {
-  render(tripEventsContainer, new CreateNoPointMessage().getElement, RenderPosition.BEFOREEND);
+  render(tripEventsContainer, new CreateNoPointMessage(), RenderPosition.BEFOREEND);
 } else {
-  render(tripFiltersContainer, new CreateFilters(DEFAULT_VALUE.filter).getElement, RenderPosition.BEFOREEND);
-  render(tripEventsContainer, new CreateSort(DEFAULT_VALUE.sorting).getElement, RenderPosition.BEFOREEND);
+  render(tripFiltersContainer, new CreateFilters(DEFAULT_VALUE.filter), RenderPosition.BEFOREEND);
+  render(tripEventsContainer, new CreateSort(DEFAULT_VALUE.sorting), RenderPosition.BEFOREEND);
 
-  render(tripEventsContainer, new ListPoinView().getElement, RenderPosition.BEFOREEND);
+  render(tripEventsContainer, new ListPoinView(), RenderPosition.BEFOREEND);
 
   const listPointsContainer = document.querySelector('.trip-events__list');
-
-  // render(listPointsContainer, new CreateEditPoint(tasks[0]).element, RenderPosition.AFTERBEGIN);
-  // renderElement(listPointsContainer, new CreateNewPoint(tasks[1]).getElement, RenderPosition.BEFOREEND);
-  // renderTemplate(listPointsContainer, createPointWithoutOffersTemplate(tasks[2]), RenderPosition.BEFOREEND);
-  // renderTemplate(listPointsContainer, createPointWithoutDestinationTemplate(tasks[3]), RenderPosition.BEFOREEND);
 
   for (let i = 0; i < TASK_COUNT; i++) {
     renderPoint(listPointsContainer, tasks[i]);

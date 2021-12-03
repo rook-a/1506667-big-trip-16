@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view.js';
 
 const createEditPointTemplate = (point) => {
   const {type, price, destination, dateFullFormat, timeStart, timeEnd} = point;
@@ -173,27 +173,35 @@ const createEditPointTemplate = (point) => {
           </li>`;
 };
 
-export default class CreateEditPoint {
-  #element = null;
+export default class CreateEditPoint extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
-  }
-
-  get getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate);
-    }
-
-    return this.#element;
   }
 
   get getTemplate() {
     return createEditPointTemplate(this.#point);
   }
 
-  removeElement() {
-    this.#element = null;
+  setOnEditPointClick = (callback) => {
+    this._callback.pointClick = callback;
+    this.getElement.querySelector('.event__rollup-btn').addEventListener('click', this.#pointClick);
+  }
+
+  setOnFormSubmit = (callback) => {
+    this._callback.formSubmit = callback;
+    this.getElement.querySelector('.event--edit').addEventListener('submit', this.#formSubmit);
+  }
+
+  #pointClick = (evt) => {
+    evt.preventDefault();
+    this._callback.pointClick();
+  }
+
+  #formSubmit = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 }

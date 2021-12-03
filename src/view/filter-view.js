@@ -1,5 +1,5 @@
-import {FILTERS} from '../const.js';
-import {createElement} from '../render.js';
+import {FILTERS} from '../utils/const.js';
+import AbstractView from './abstract-view.js';
 
 const createFiltersTemplate = (defaultFilter) => (
   `<form class="trip-filters" action="#" method="get">
@@ -19,27 +19,15 @@ const createFiltersTemplate = (defaultFilter) => (
   </form>`
 );
 
-export default class CreateFilters {
-  #element = null;
+export default class CreateFilters extends AbstractView{
   #defaultFilter = null;
 
   constructor(defaultFilter) {
+    super();
     this.#defaultFilter = defaultFilter;
-  }
-
-  get getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate);
-    }
-
-    return this.#element;
   }
 
   get getTemplate() {
     return createFiltersTemplate(this.#defaultFilter);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
