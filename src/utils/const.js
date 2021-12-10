@@ -90,3 +90,8 @@ export const DEFAULT_VALUE = {
   filter: FILTERS[0],
   sorting: SORTING[0],
 };
+
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};

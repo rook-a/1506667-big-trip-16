@@ -1,19 +1,23 @@
 import CreateEditPoint from '../view/edit-point-view.js';
 import CreatePoint from '../view/point-view.js';
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
+import {Mode} from '../utils/const.js';
 
 export default class PointPresenter {
   #listPointContainer = null;
   #changeDate = null;
+  #changeMode = null;
 
   #pointComponent = null;
   #editPointComponent = null;
 
   #point = null;
+  #mode = Mode.DEFAULT;
 
-  constructor(listPointContainer, changeDate) {
+  constructor(listPointContainer, changeDate, changeMode) {
     this.#listPointContainer = listPointContainer;
     this.#changeDate = changeDate;
+    this.#changeMode = changeMode;
   }
 
   init = (point) => {
@@ -35,11 +39,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#listPointContainer.getElement.contains(prevPointComponent.getElement)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#listPointContainer.getElement.contains(prevEditPointComponent.getElement)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editPointComponent, prevEditPointComponent);
     }
 
@@ -52,14 +56,24 @@ export default class PointPresenter {
     remove(this.#editPointComponent);
   }
 
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToPoint();
+    }
+  }
+
   #replacePointToForm = () => {
     replace(this.#editPointComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#onEscKeyDown);
+
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
   };
 
   #replaceFormToPoint = () => {
     replace(this.#pointComponent, this.#editPointComponent);
     document.removeEventListener('keydown', this.#onEscKeyDown);
+    this.#mode = Mode.DEFAULT;
   };
 
   #onEscKeyDown = (evt) => {

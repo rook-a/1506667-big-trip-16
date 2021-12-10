@@ -34,6 +34,10 @@ export default class TripPresenter {
     this.#renderEvents();
   }
 
+  #onModeChange = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  }
+
   #onPointChange = (updatedPoint) => {
     this.#points = updateItem(this.#points, updatedPoint);
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
@@ -48,7 +52,7 @@ export default class TripPresenter {
   }
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#listPointComponent, this.#onPointChange);
+    const pointPresenter = new PointPresenter(this.#listPointComponent, this.#onPointChange, this.#onModeChange);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   }
