@@ -64,8 +64,18 @@ export default class CreatePoint extends AbstractView {
     this.getElement.querySelector('.event__rollup-btn').addEventListener('click', this.#pointClick);
   }
 
+  setOnFavoriteClick = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.getElement.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClick);
+  }
+
   #pointClick = (evt) => {
     evt.preventDefault();
     this._callback.pointClick();
+  }
+
+  #favoriteClick = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 }

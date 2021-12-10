@@ -5,10 +5,11 @@ import PointPresenter from './point-pressnter.js';
 //import {generatePoint} from './mock/point.js';
 import CreateNoPointMessage from '../view/no-point-message-view.js';
 import {RenderPosition, render} from '../utils/render.js';
+import {updateItem} from '../utils/utils.js';
 
 import {DEFAULT_VALUE} from '../utils/const.js';
 
-const POINT_COUNT = 20;
+const POINTS_COUNT = 20;
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -20,6 +21,7 @@ export default class TripPresenter {
   #noPointMessageComponent = new CreateNoPointMessage();
 
   #points = [];
+  #pointPresenter = new Map();
 
   constructor(tripEventsContainer, tripFiltersContainer) {
     this.#tripEventsContainer = tripEventsContainer;
@@ -32,6 +34,11 @@ export default class TripPresenter {
     this.#renderEvents();
   }
 
+  #onPointChange = (updatedPoint) => {
+    this.#points = updateItem(this.#points, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+  }
+
   #renderFilters = () => {
     render(this.#tripFiltersContainer, this.#filterComponent, RenderPosition.BEFOREEND);
   }
@@ -41,12 +48,18 @@ export default class TripPresenter {
   }
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#listPointComponent);
+    const pointPresenter = new PointPresenter(this.#listPointComponent, this.#onPointChange);
     pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
+  }
+
+  #clearPoints = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
   }
 
   #renderPoints = () => {
-    for (let i = 0; i < POINT_COUNT; i++) {
+    for (let i = 0; i < POINTS_COUNT; i++) {
       this.#renderPoint(this.#points[i]);
     }
   }

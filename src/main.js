@@ -12,9 +12,9 @@ import {generatePoint} from './mock/point.js';
 import {DEFAULT_VALUE} from './utils/const.js';
 import TripPresenter from './presenter/trip-presenter.js';
 
-const POINT_COUNT = 20;
+const POINTS_COUNT = 20;
 
-const points = Array.from({length: POINT_COUNT}, generatePoint);
+const points = Array.from({length: POINTS_COUNT}, generatePoint);
 // console.log(points);
 //const filters = generateFilter(points);
 //console.log(filters);
