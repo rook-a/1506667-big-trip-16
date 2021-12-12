@@ -6,6 +6,7 @@ import {TYPES} from '../utils/const.js';
 import {DESTINATIONS} from '../utils/const.js';
 import {DESCRIPTIONS} from '../utils/const.js';
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 
 const PRICE_FROM = 0;
 const PRICE_TO = 1000;
@@ -59,6 +60,7 @@ export const generatePoint = () => {
   const timeEnd = generateDate().dayTimeEnd;
 
   return {
+    id: nanoid(),
     type: generateElement(TYPES),
     destination: {
       name: generateElement(DESTINATIONS),
