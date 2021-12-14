@@ -31,8 +31,8 @@ export default class PointPresenter {
 
     this.#pointComponent.setOnPointClick(this.#onClick);
     this.#pointComponent.setOnFavoriteClick(this.#onFavoriteClick);
-    this.#editPointComponent.setOnFormSubmit(this.#onSubmit);
-    this.#editPointComponent.setOnEditPointClick(this.#onSubmit); //onSubmit в данном случае не очень понятное название. возможно стоит заменить
+    this.#editPointComponent.setOnFormSubmit(this.#onClickToClose);
+    this.#editPointComponent.setOnEditPointClick(this.#onClickToClose);
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
       render(this.#listPointContainer, this.#pointComponent, RenderPosition.BEFOREEND);
@@ -91,7 +91,7 @@ export default class PointPresenter {
     this.#replacePointToForm();
   }
 
-  #onSubmit = (point) => {
+  #onClickToClose = (point) => {
     this.#changeDate(point);
     this.#replaceFormToPoint();
   }

@@ -77,18 +77,18 @@ export const MENU_TABS = [
   'Stats',
 ];
 
-export const SORTING = [
-  'day',
-  'event',
-  'time',
-  'price',
-  'offers',
-];
+export const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
 
 export const DEFAULT_VALUE = {
   menu: MENU_TABS[0],
   filter: FILTERS[0],
-  sorting: SORTING[0],
+  sorting: SortType.DAY,
 };
 
 export const Mode = {

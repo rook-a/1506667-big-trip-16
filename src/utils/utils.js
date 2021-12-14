@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const getRandomInteger = (from, to) => {
   from = Math.ceil(from);
   to = Math.floor(to);
@@ -34,4 +36,30 @@ export const updateItem = (items, update) => {
     update,
     ...items.slice(index + 1),
   ];
+};
+
+export const sortPrice = (pointFirst, pointSecond) => pointSecond.price - pointFirst.price;
+
+export const sortDays = (pointFirst, pointSecond) => {
+  if (dayjs(pointFirst.date).isBefore(pointSecond.date)) {
+    return 1;
+  }
+
+  if (dayjs(pointFirst.date).isAfter(pointSecond.date)) {
+    return -1;
+  }
+
+  return 0;
+};
+
+export const sortTime = (pointFirst, pointSecond) => {
+  if (pointSecond.timeDuration > pointFirst.timeDuration) {
+    return 1;
+  }
+
+  if (pointSecond.timeDuration < pointFirst.timeDuration) {
+    return -1;
+  }
+
+  return 0;
 };

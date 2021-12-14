@@ -8,8 +8,8 @@ import {RenderPosition, render} from '../utils/render.js';
 import {updateItem} from '../utils/utils.js';
 
 import {DEFAULT_VALUE} from '../utils/const.js';
-
-const POINTS_COUNT = 20;
+import {SortType} from '../utils/const.js';
+import {sortPrice, sortDays, sortTime} from '../utils/utils.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -22,6 +22,8 @@ export default class TripPresenter {
 
   #points = [];
   #pointPresenter = new Map();
+  #currentSortType = SortType.DAY;
+  #soursedPoints = [];
 
   constructor(tripEventsContainer, tripFiltersContainer) {
     this.#tripEventsContainer = tripEventsContainer;
@@ -30,6 +32,9 @@ export default class TripPresenter {
 
   init = (points) => {
     this.#points = [...points];
+    this.#soursedPoints = [...points];
+
+    this.#points.sort(sortDays);
 
     this.#renderEvents();
   }
@@ -40,6 +45,7 @@ export default class TripPresenter {
 
   #onPointChange = (updatedPoint) => {
     this.#points = updateItem(this.#points, updatedPoint);
+    this.#soursedPoints = updateItem(this.#soursedPoints, updatedPoint);
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   }
 
@@ -47,8 +53,38 @@ export default class TripPresenter {
     render(this.#tripFiltersContainer, this.#filterComponent, RenderPosition.BEFOREEND);
   }
 
+  #sortPoints = (sortType) => {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#points.sort(sortDays);
+        break;
+      case SortType.TIME:
+        this.#points.sort(sortTime);
+        break;
+      case SortType.PRICE:
+        this.#points.sort(sortPrice);
+        break;
+      default:
+        this.#points = [...this.#soursedPoints];
+    }
+
+    this.#currentSortType = sortType;
+  }
+
+  #onSortChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortPoints(sortType);
+
+    this.#clearPoints();
+    this.#renderPoints();
+  }
+
   #renderSort = () => {
     render(this.#tripEventsContainer, this.#sortConponent, RenderPosition.BEFOREEND);
+    this.#sortConponent.setOnSortChange(this.#onSortChange);
   }
 
   #renderPoint = (point) => {
@@ -63,7 +99,7 @@ export default class TripPresenter {
   }
 
   #renderPoints = () => {
-    for (let i = 0; i < POINTS_COUNT; i++) {
+    for (let i = 0; i < this.#points.length; i++) {
       this.#renderPoint(this.#points[i]);
     }
   }
@@ -79,12 +115,13 @@ export default class TripPresenter {
   #renderEvents = () => {
     if (this.#points.length === 0) {
       this.#renderNoPointMessage();
-    } else {
-      this.#renderFilters();
-      this.#renderSort();
-      this.#renderListPoints();
-
-      this.#renderPoints();
+      return;
     }
+
+    this.#renderFilters();
+    this.#renderSort();
+    this.#renderListPoints();
+
+    this.#renderPoints();
   }
 }
