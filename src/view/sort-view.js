@@ -1,19 +1,19 @@
-import {SORTING} from '../utils/const.js';
+import {SortType} from '../utils/const.js';
 import AbstractView from './abstract-view.js';
 
 const createSortTemplate = (defaultSort) => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
 
-    ${SORTING.map((item) => `<div class="trip-sort__item  trip-sort__item--${item}">
+    ${Object.values(SortType).map((item) => `<div class="trip-sort__item  trip-sort__item--${item}">
 
       <input
         id="sort-${item}"
         class="trip-sort__input visually-hidden"
         type="radio"
         name="trip-sort"
-        value="sort-${item}"
+        value="${item}"
         ${defaultSort === item ? 'checked' : ''}
-        ${SORTING[1] === item || SORTING[4] === item ? 'disabled' : ''}>
+        ${SortType.EVENT === item || SortType.OFFERS === item ? 'disabled' : ''}>
 
       <label class="trip-sort__btn" for="sort-${item}">${item}</label>
 
@@ -32,5 +32,18 @@ export default class CreateSort extends AbstractView {
 
   get getTemplate() {
     return createSortTemplate(this.#defaultSort);
+  }
+
+  setOnSortChange = (callback) => {
+    this._callback.sortChange = callback;
+    this.getElement.addEventListener('click', this.#sortTypeChange);
+  }
+
+  #sortTypeChange = (evt) => {
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+
+    this._callback.sortChange(evt.target.value);
   }
 }

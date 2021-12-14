@@ -1,7 +1,3 @@
-// import flatpickr from 'flatpickr';
-// import 'flatpickr/dist/flatpickr.min.css';
-// //import dayjs from 'dayjs';
-
 import CreateTripInfo from './view/trip-info-view.js';
 import CreateSiteMenu from './view/menu-view.js';
 // import CreateFilters from './view/filter-view.js';

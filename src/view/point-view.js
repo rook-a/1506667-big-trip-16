@@ -9,7 +9,7 @@ const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
 </ul>`;
 
 const createPointTemplate = (point) => {
-  const {type, price, destination, offer, date, timeStart, timeEnd} = point;
+  const {type, price, destination, offer, date, timeStart, timeEnd, timeDuration} = point;
 
   const favoriteClassName = point.isFavorite ? 'event__favorite-btn--active' : '';
   const offerTemplate = offer.length ? createOfferTemplate(offer) : '';
@@ -27,7 +27,7 @@ const createPointTemplate = (point) => {
                   &mdash;
                   <time class="event__end-time" datetime="2019-03-18T11:00">${timeEnd}</time>
                 </p>
-                <p class="event__duration">30M</p>
+                <p class="event__duration">${timeDuration}M</p>
               </div>
               <p class="event__price">
                 &euro;&nbsp;<span class="event__price-value">${price}</span>
