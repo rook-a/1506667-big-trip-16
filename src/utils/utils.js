@@ -38,21 +38,21 @@ export const updateItem = (items, update) => {
   ];
 };
 
-export const sortPrice = (pointFirst, pointSecond) => pointSecond.price - pointFirst.price;
+export const sortByPrice = (pointFirst, pointSecond) => pointSecond.price - pointFirst.price;
 
-export const sortDays = (pointFirst, pointSecond) => {
+export const sortByDays = (pointFirst, pointSecond) => {
   if (dayjs(pointFirst.date).isBefore(pointSecond.date)) {
-    return 1;
+    return -1;
   }
 
   if (dayjs(pointFirst.date).isAfter(pointSecond.date)) {
-    return -1;
+    return 1;
   }
 
   return 0;
 };
 
-export const sortTime = (pointFirst, pointSecond) => {
+export const sortByTime = (pointFirst, pointSecond) => {
   if (pointSecond.timeDuration > pointFirst.timeDuration) {
     return 1;
   }
