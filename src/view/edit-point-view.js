@@ -1,4 +1,4 @@
-import AbstractView from './abstract-view.js';
+import SmartView from './smart-view.js';
 import {DESTINATIONS} from '../utils/const.js';
 
 const createPictureTemplate = (pictures) => `<div class="event__photos-container">
@@ -11,7 +11,7 @@ const createDescriptionTemplate = (description) => `<p class="event__destination
 
 const createOfferCheckboxTemplate = (offers) => `<div class="event__available-offers">
       ${offers.map((offer) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="${offer.name}" checked>
+      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="${offer.name}">
         <label class="event__offer-label" for="${offer.id}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -27,13 +27,13 @@ const createOfferTemplate = (offers) => `<section class="event__section  event__
 
   </section>`;
 
-const createCityChoiceTemplate = (citys) => `${citys.map((city) => `<option value="${city}"></option>`).join('')}`;
+const createDropdownCityTemplate = (citys) => `${citys.map((city) => `<option value="${city}"></option>`).join('')}`;
 
 const createEditPointTemplate = (point) => {
   const {type, price, destination, dateFullFormat, timeStart, timeEnd, offer} = point;
 
-  const cityChoiceTemplate = createCityChoiceTemplate(DESTINATIONS);
-  const picturesTemplate = destination.pictures.length > 0 ? createPictureTemplate(destination.pictures) : '';
+  const cityChoiceTemplate = createDropdownCityTemplate(DESTINATIONS);
+  const picturesTemplate = destination.pictures ? createPictureTemplate(destination.pictures) : '';
   const descriptionTemplate = createDescriptionTemplate(destination.description);
   const offerTemplate = offer.length > 0 ? createOfferTemplate(offer) : '';
 
@@ -77,7 +77,7 @@ const createEditPointTemplate = (point) => {
                       </div>
 
                       <div class="event__type-item">
-                        <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
+                        <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
                         <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
                       </div>
 
@@ -104,7 +104,7 @@ const createEditPointTemplate = (point) => {
                     ${type}
                   </label>
                   <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
-                  <datalist id="destination-list-1">
+                  <datalist class="event__city-list" id="destination-list-1">
                     ${cityChoiceTemplate}
                   </datalist>
                 </div>
@@ -147,16 +147,16 @@ const createEditPointTemplate = (point) => {
           </li>`;
 };
 
-export default class CreateEditPoint extends AbstractView {
-  #point = null;
-
+export default class CreateEditPoint extends SmartView {
   constructor(point) {
     super();
-    this.#point = point;
+    this._data = CreateEditPoint.parsePointToData(point);
+
+    this.#setInnerHandlers();
   }
 
   get getTemplate() {
-    return createEditPointTemplate(this.#point);
+    return createEditPointTemplate(this._data);
   }
 
   setOnEditPointClick = (callback) => {
@@ -171,11 +171,64 @@ export default class CreateEditPoint extends AbstractView {
 
   #pointClick = (evt) => {
     evt.preventDefault();
-    this._callback.pointClick(this.#point);
+    this._callback.pointClick(this._data);
   }
 
   #formSubmit = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(CreateEditPoint.parseDataToPoint(this._data));
+  }
+
+  static parsePointToData = (point) => ({...point})
+
+  static parseDataToPoint = (data) => ({...data})
+
+  #onTypeChange = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+      offer: this._data.offer,
+    });
+  }
+
+  #onCityChange = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      destination: {
+        name: evt.target.value,
+        description: this._data.destination.description,
+        pictures: this._data.destination.pictures,
+      }
+    });
+  }
+
+  #setInnerHandlers = () => {
+    this.getElement.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
+    this.getElement.querySelector('.event__field-group--destination').addEventListener('change', this.#onCityChange);
+    this.getElement.querySelector('.event__input--destination').addEventListener('input', this.#onCityInput);
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setOnEditPointClick(this._callback.pointClick);
+    this.setOnFormSubmit(this._callback.formSubmit);
+  }
+
+  #onCityInput = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      destination: {
+        name: evt.target.value,
+        description: this._data.destination.description,
+        pictures: this._data.destination.pictures,
+        //если не указывать description и pictures (оставив только name) в this._data эти поля будут undefined
+      }
+    }, true);
+  }
+
+  reset = (point) => {
+    this.updateData(
+      CreateEditPoint.parsePointToData(point),
+    );
   }
 }
