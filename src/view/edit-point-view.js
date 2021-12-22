@@ -187,6 +187,7 @@ export default class CreateEditPoint extends SmartView {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
+      offer: OFFERS.find(({eventType}) => evt.target.value === eventType).offers,
     });
   }
 
