@@ -1,8 +1,7 @@
 import {getRandomInteger} from '../utils/utils.js';
 import {generateElement} from '../utils/utils.js';
-import {getRandomElements} from '../utils/utils.js';
+// import {getRandomElements} from '../utils/utils.js';
 import {OFFERS} from '../utils/const.js';
-import {TYPES} from '../utils/const.js';
 import {DESTINATIONS} from '../utils/const.js';
 import {DESCRIPTIONS} from '../utils/const.js';
 import dayjs from 'dayjs';
@@ -19,7 +18,10 @@ const createPhotos = () => {
   const pictures = [];
 
   for (let i = 0; i < COUNT; i++) {
-    const picture = `http://picsum.photos/248/152?r=${getRandomInteger(PRICE_FROM, PRICE_TO)}`;
+    const picture = {
+      src: `http://picsum.photos/248/152?r=${getRandomInteger(PRICE_FROM, PRICE_TO)}`,
+      description: `${generateElement(DESCRIPTIONS)}`,
+    };
 
     pictures.push(picture);
   }
@@ -45,6 +47,8 @@ const generateDate = () => {
 };
 
 export const generatePoint = () => {
+  const currentOffer = generateElement(OFFERS);
+  const currentDestination = generateElement(DESTINATIONS);
   const date = generateDate().dayFormat;
   const dateFullFormat = generateDate().dayFullFormat;
   const timeStart = generateDate().dayTimeStart;
@@ -53,11 +57,11 @@ export const generatePoint = () => {
 
   return {
     id: nanoid(),
-    type: generateElement(TYPES),
+    type: currentOffer.eventType,
     destination: {
-      name: generateElement(DESTINATIONS),
-      description: generateElement(DESCRIPTIONS),
-      pictures: getRandomElements(createPhotos()),
+      name: currentDestination.name,
+      description: currentDestination.description,
+      pictures: createPhotos(),
     },
     date,
     dateFullFormat,
@@ -65,7 +69,7 @@ export const generatePoint = () => {
     timeEnd,
     timeDuration,
     price: getRandomInteger(PRICE_FROM, PRICE_TO),
-    offer: getRandomElements(OFFERS),
+    offer: currentOffer.offers,
     isFavorite: Boolean(getRandomInteger(0, 1)),
   };
 };

@@ -1,41 +1,41 @@
 import SmartView from './smart-view.js';
-import {DESTINATIONS} from '../utils/const.js';
+import {OFFERS, DESTINATIONS} from '../utils/const.js';
 
 const createPictureTemplate = (pictures) => `<div class="event__photos-container">
     <div class="event__photos-tape">
-      ${pictures.map((src) => `<img class="event__photo" src="${src}" alt="Event photo"></img>`).join('')}
+      ${pictures.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}"></img>`).join('')}
     </div>
   </div>`;
 
-const createDescriptionTemplate = (description) => `<p class="event__destination-description">${description}</p>`;
+const createDescriptionTemplate = ({description}) => `<p class="event__destination-description">${description}</p>`;
 
-const createOfferCheckboxTemplate = (offers) => `<div class="event__available-offers">
-      ${offers.map((offer) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="${offer.name}">
-        <label class="event__offer-label" for="${offer.id}">
-          <span class="event__offer-title">${offer.title}</span>
+const createOfferCheckboxTemplate = ({offers}) => `<div class="event__available-offers">
+    ${offers.map(({id, name, title, price}) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${name}">
+      <label class="event__offer-label" for="${id}">
+          <span class="event__offer-title">${title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
-        </label>
+          <span class="event__offer-price">${price}</span>
+      </label>
     </div>`).join('')}
   </div>`;
 
 const createOfferTemplate = (offers) => `<section class="event__section  event__section--offers">
   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-  ${createOfferCheckboxTemplate(offers)}
-
+    ${createOfferCheckboxTemplate(offers)}
   </section>`;
 
-const createDropdownCityTemplate = (citys) => `${citys.map((city) => `<option value="${city}"></option>`).join('')}`;
+const createDropdownCityTemplate = (citys) => `${citys.map(({name}) => `<option value="${name}"></option>`).join('')}`;
 
 const createEditPointTemplate = (point) => {
-  const {type, price, destination, dateFullFormat, timeStart, timeEnd, offer} = point;
+  const {type, price, destination, dateFullFormat, timeStart, timeEnd} = point;
+  const filterDescription = DESTINATIONS.find(({name}) => destination.name === name);
+  const filterOffer = OFFERS.find(({eventType}) => type === eventType);
 
   const cityChoiceTemplate = createDropdownCityTemplate(DESTINATIONS);
   const picturesTemplate = destination.pictures ? createPictureTemplate(destination.pictures) : '';
-  const descriptionTemplate = createDescriptionTemplate(destination.description);
-  const offerTemplate = offer.length > 0 ? createOfferTemplate(offer) : '';
+  const descriptionTemplate = createDescriptionTemplate(filterDescription);
+  const offerTemplate = createOfferTemplate(filterOffer);
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
@@ -187,7 +187,6 @@ export default class CreateEditPoint extends SmartView {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
-      offer: this._data.offer,
     });
   }
 
@@ -221,7 +220,6 @@ export default class CreateEditPoint extends SmartView {
         name: evt.target.value,
         description: this._data.destination.description,
         pictures: this._data.destination.pictures,
-        //если не указывать description и pictures (оставив только name) в this._data эти поля будут undefined
       }
     }, true);
   }
