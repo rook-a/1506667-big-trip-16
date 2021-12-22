@@ -212,57 +212,112 @@ export const DESTINATIONS = [
   {
     name: 'Amsterdam',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'Geneva',
     description: 'Cras aliquet varius magna, non porta ligula feugiat eget.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'Chamonix',
     description: 'Fusce tristique felis at fermentum pharetra.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'Berlin',
     description: 'Aliquam id orci ut lectus varius viverra.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'Porto',
     description: 'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'Barselona',
     description: 'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'London',
     description: 'Sed sed nisi sed augue convallis suscipit in sed felis.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'Oslo',
     description: 'Aliquam erat volutpat.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'Bratislava',
     description: 'Nunc fermentum tortor ac porta dapibus.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'Milan',
     description: 'In rutrum ac purus sit amet tempus.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
   {
     name: 'Ibiza',
     description: 'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
-    pictures: null,
+    pictures: [
+      {
+        src: '',
+        description: '',
+      }
+    ],
   },
 ];
 
