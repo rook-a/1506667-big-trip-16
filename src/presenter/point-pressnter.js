@@ -31,7 +31,7 @@ export default class PointPresenter {
 
     this.#pointComponent.setOnPointClick(this.#onClick);
     this.#pointComponent.setOnFavoriteClick(this.#onFavoriteClick);
-    this.#editPointComponent.setOnFormSubmit(this.#onClickToClose);
+    this.#editPointComponent.setOnFormSubmit(this.#onClickToSave);
     this.#editPointComponent.setOnEditPointClick(this.#onClickToClose);
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
@@ -58,6 +58,7 @@ export default class PointPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#editPointComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   }
@@ -79,6 +80,7 @@ export default class PointPresenter {
   #onEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#editPointComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   };
@@ -91,8 +93,13 @@ export default class PointPresenter {
     this.#replacePointToForm();
   }
 
-  #onClickToClose = (point) => {
+  #onClickToSave = (point) => {
     this.#changeDate(point);
+    this.#replaceFormToPoint();
+  }
+
+  #onClickToClose = () => {
+    this.#editPointComponent.reset(this.#point);
     this.#replaceFormToPoint();
   }
 }

@@ -12,7 +12,7 @@ const createPointTemplate = (point) => {
   const {type, price, destination, offer, date, timeStart, timeEnd, timeDuration} = point;
 
   const favoriteClassName = point.isFavorite ? 'event__favorite-btn--active' : '';
-  const offerTemplate = offer.length ? createOfferTemplate(offer) : '';
+  const offerTemplate = offer ? createOfferTemplate(offer) : '';
 
   return `<li class="trip-events__item">
             <div class="event">

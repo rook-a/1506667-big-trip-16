@@ -1,20 +1,41 @@
-import AbstractView from './abstract-view.js';
+import SmartView from './smart-view.js';
+import {OFFERS, DESTINATIONS} from '../utils/const.js';
+
+const createPictureTemplate = (pictures) => `<div class="event__photos-container">
+    <div class="event__photos-tape">
+      ${pictures.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}"></img>`).join('')}
+    </div>
+  </div>`;
+
+const createDescriptionTemplate = ({description}) => `<p class="event__destination-description">${description}</p>`;
+
+const createOfferCheckboxTemplate = ({offers}) => `<div class="event__available-offers">
+    ${offers.map(({id, name, title, price}) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${name}">
+      <label class="event__offer-label" for="${id}">
+          <span class="event__offer-title">${title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${price}</span>
+      </label>
+    </div>`).join('')}
+  </div>`;
+
+const createOfferTemplate = (offers) => `<section class="event__section  event__section--offers">
+  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    ${createOfferCheckboxTemplate(offers)}
+  </section>`;
+
+const createDropdownCityTemplate = (citys) => `${citys.map(({name}) => `<option value="${name}"></option>`).join('')}`;
 
 const createEditPointTemplate = (point) => {
   const {type, price, destination, dateFullFormat, timeStart, timeEnd} = point;
+  const filterDescription = DESTINATIONS.find(({name}) => destination.name === name);
+  const filterOffer = OFFERS.find(({eventType}) => type === eventType);
 
-  // console.log(offer);
-
-  // const isChecked = () => {
-  //   const offerChecked = document.querySelectorAll('.event__offer-checkbox');
-
-  //   for (let i = 0; i < offer.length; i++) {
-  //     console.log(offerChecked);
-  //     if (offer[i].id === offerChecked.id) {
-  //       offerChecked[i].checked = true;
-  //     }
-  //   }
-  // };
+  const cityChoiceTemplate = createDropdownCityTemplate(DESTINATIONS);
+  const picturesTemplate = destination.pictures ? createPictureTemplate(destination.pictures) : '';
+  const descriptionTemplate = createDescriptionTemplate(filterDescription);
+  const offerTemplate = createOfferTemplate(filterOffer);
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
@@ -56,7 +77,7 @@ const createEditPointTemplate = (point) => {
                       </div>
 
                       <div class="event__type-item">
-                        <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
+                        <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
                         <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
                       </div>
 
@@ -83,10 +104,8 @@ const createEditPointTemplate = (point) => {
                     ${type}
                   </label>
                   <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
-                  <datalist id="destination-list-1">
-                    <option value="Amsterdam"></option>
-                    <option value="Geneva"></option>
-                    <option value="Chamonix"></option>
+                  <datalist class="event__city-list" id="destination-list-1">
+                    ${cityChoiceTemplate}
                   </datalist>
                 </div>
 
@@ -113,76 +132,31 @@ const createEditPointTemplate = (point) => {
                 </button>
               </header>
               <section class="event__details">
-                <section class="event__section  event__section--offers">
-                  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-                  <div class="event__available-offers">
-                    <div class="event__offer-selector">
-                      <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                      <label class="event__offer-label" for="event-offer-luggage-1">
-                        <span class="event__offer-title">Add luggage</span>
-                        &plus;&euro;&nbsp;
-                        <span class="event__offer-price">50</span>
-                      </label>
-                    </div>
-
-                    <div class="event__offer-selector">
-                      <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-                      <label class="event__offer-label" for="event-offer-comfort-1">
-                        <span class="event__offer-title">Switch to comfort</span>
-                        &plus;&euro;&nbsp;
-                        <span class="event__offer-price">80</span>
-                      </label>
-                    </div>
-
-                    <div class="event__offer-selector">
-                      <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                      <label class="event__offer-label" for="event-offer-meal-1">
-                        <span class="event__offer-title">Add meal</span>
-                        &plus;&euro;&nbsp;
-                        <span class="event__offer-price">15</span>
-                      </label>
-                    </div>
-
-                    <div class="event__offer-selector">
-                      <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-                      <label class="event__offer-label" for="event-offer-seats-1">
-                        <span class="event__offer-title">Choose seats</span>
-                        &plus;&euro;&nbsp;
-                        <span class="event__offer-price">5</span>
-                      </label>
-                    </div>
-
-                    <div class="event__offer-selector">
-                      <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-                      <label class="event__offer-label" for="event-offer-train-1">
-                        <span class="event__offer-title">Travel by train</span>
-                        &plus;&euro;&nbsp;
-                        <span class="event__offer-price">40</span>
-                      </label>
-                    </div>
-                  </div>
-                </section>
+                ${offerTemplate}
 
                 <section class="event__section  event__section--destination">
                   <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-                  <p class="event__destination-description">${destination.description}</p>
+
+                  ${descriptionTemplate}
+                  ${picturesTemplate}
+
                 </section>
               </section>
             </form>
           </li>`;
 };
 
-export default class CreateEditPoint extends AbstractView {
-  #point = null;
-
+export default class CreateEditPoint extends SmartView {
   constructor(point) {
     super();
-    this.#point = point;
+    this._data = CreateEditPoint.parsePointToData(point);
+
+    this.#setInnerHandlers();
   }
 
   get getTemplate() {
-    return createEditPointTemplate(this.#point);
+    return createEditPointTemplate(this._data);
   }
 
   setOnEditPointClick = (callback) => {
@@ -197,11 +171,63 @@ export default class CreateEditPoint extends AbstractView {
 
   #pointClick = (evt) => {
     evt.preventDefault();
-    this._callback.pointClick(this.#point);
+    this._callback.pointClick(this._data);
   }
 
   #formSubmit = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(CreateEditPoint.parseDataToPoint(this._data));
+  }
+
+  static parsePointToData = (point) => ({...point})
+
+  static parseDataToPoint = (data) => ({...data})
+
+  #onTypeChange = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+      offer: OFFERS.find(({eventType}) => evt.target.value === eventType).offers,
+    });
+  }
+
+  #onCityChange = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      destination: {
+        name: evt.target.value,
+        description: this._data.destination.description,
+        pictures: this._data.destination.pictures,
+      }
+    });
+  }
+
+  #setInnerHandlers = () => {
+    this.getElement.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
+    this.getElement.querySelector('.event__field-group--destination').addEventListener('change', this.#onCityChange);
+    this.getElement.querySelector('.event__input--destination').addEventListener('input', this.#onCityInput);
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setOnEditPointClick(this._callback.pointClick);
+    this.setOnFormSubmit(this._callback.formSubmit);
+  }
+
+  #onCityInput = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      destination: {
+        name: evt.target.value,
+        description: this._data.destination.description,
+        pictures: this._data.destination.pictures,
+      }
+    }, true);
+  }
+
+  reset = (point) => {
+    this.updateData(
+      CreateEditPoint.parsePointToData(point),
+    );
   }
 }

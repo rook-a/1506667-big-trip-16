@@ -9,7 +9,7 @@ import {updateItem} from '../utils/utils.js';
 
 import {DEFAULT_VALUE} from '../utils/const.js';
 import {SortType} from '../utils/const.js';
-import {sortPrice, sortDays, sortTime} from '../utils/utils.js';
+import {sortByPrice, sortByDays, sortByTime} from '../utils/utils.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -34,7 +34,7 @@ export default class TripPresenter {
     this.#points = [...points];
     this.#soursedPoints = [...points];
 
-    this.#points.sort(sortDays);
+    this.#points.sort(sortByDays);
 
     this.#renderEvents();
   }
@@ -56,13 +56,13 @@ export default class TripPresenter {
   #sortPoints = (sortType) => {
     switch (sortType) {
       case SortType.DAY:
-        this.#points.sort(sortDays);
+        this.#points.sort(sortByDays);
         break;
       case SortType.TIME:
-        this.#points.sort(sortTime);
+        this.#points.sort(sortByTime);
         break;
       case SortType.PRICE:
-        this.#points.sort(sortPrice);
+        this.#points.sort(sortByPrice);
         break;
       default:
         this.#points = [...this.#soursedPoints];
