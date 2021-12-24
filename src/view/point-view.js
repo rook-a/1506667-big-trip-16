@@ -8,26 +8,35 @@ const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
   </li>`).join('')}
 </ul>`;
 
+const createTimeDuration = (timeStart, timeEnd) => {
+  const timeDuration = timeEnd.diff(timeStart, 'm');
+  const minutesDuration = timeDuration % 60 > 0 ? `${timeDuration % 60}M` : '';
+  const hoursDuration = Math.floor(timeDuration / 60) % 24 > 0 ? `${Math.floor(timeDuration / 60) % 24}H ` : '';
+  const daysDuration = Math.floor((timeDuration / 60) / 24) > 0 ? `${Math.floor((timeDuration / 60) / 24)}D ` : '';
+
+  return daysDuration + hoursDuration + minutesDuration;
+};
+
 const createPointTemplate = (point) => {
-  const {type, price, destination, offer, date, timeStart, timeEnd, timeDuration} = point;
+  const {type, price, destination, offer, timeStart, timeEnd} = point;
 
   const favoriteClassName = point.isFavorite ? 'event__favorite-btn--active' : '';
   const offerTemplate = offer ? createOfferTemplate(offer) : '';
 
   return `<li class="trip-events__item">
             <div class="event">
-              <time class="event__date" datetime="2019-03-18">${date}</time>
+              <time class="event__date" datetime="${timeStart.format('YYYY-MM-DD')}">${timeStart.format('MMM D')}</time>
               <div class="event__type">
                 <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
               </div>
               <h3 class="event__title">${type} ${destination.name}</h3>
               <div class="event__schedule">
                 <p class="event__time">
-                  <time class="event__start-time" datetime="2019-03-18T10:30">${timeStart}</time>
+                  <time class="event__start-time" datetime="${timeStart.format('YYYY-MM-DDTHH:mm')}">${timeStart.format('HH:mm')}</time>
                   &mdash;
-                  <time class="event__end-time" datetime="2019-03-18T11:00">${timeEnd}</time>
+                  <time class="event__end-time" datetime="${timeEnd.format('YYYY-MM-DDTHH:mm')}">${timeEnd.format('HH:mm')}</time>
                 </p>
-                <p class="event__duration">${timeDuration}M</p>
+                <p class="event__duration">${createTimeDuration(timeStart, timeEnd)}</p>
               </div>
               <p class="event__price">
                 &euro;&nbsp;<span class="event__price-value">${price}</span>

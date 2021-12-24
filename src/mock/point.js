@@ -1,6 +1,5 @@
 import {getRandomInteger} from '../utils/utils.js';
 import {generateElement} from '../utils/utils.js';
-// import {getRandomElements} from '../utils/utils.js';
 import {OFFERS} from '../utils/const.js';
 import {DESTINATIONS} from '../utils/const.js';
 import {DESCRIPTIONS} from '../utils/const.js';
@@ -30,30 +29,22 @@ const createPhotos = () => {
 };
 
 const generateDate = () => {
-
   const DAY_GAP = 7;
   const daysGap = getRandomInteger(-DAY_GAP, DAY_GAP);
 
-  const day = dayjs().add(daysGap, 'day').toDate();
-  const dayFormat = dayjs(day).format('MMM D');
-  const dayFullFormat = dayjs(day).format('DD/MM/YY');
-
   const TIME_GAP = 30;
   const timesGap = getRandomInteger(-TIME_GAP, TIME_GAP);
-  const dayTimeStart = dayjs().add(timesGap, 'm').format('HH:mm');
-  const dayTimeEnd = dayjs().add(timesGap, 'm').format('HH:mm');
+  const dayTimeStart = dayjs().add(daysGap, 'd').add(timesGap, 'm');
+  const dayTimeEnd = dayjs().add(daysGap, 'd').add(timesGap, 'm');
 
-  return {dayFormat, dayFullFormat, dayTimeStart, dayTimeEnd};
+  return {dayTimeStart, dayTimeEnd};
 };
 
 export const generatePoint = () => {
   const currentOffer = generateElement(OFFERS);
   const currentDestination = generateElement(DESTINATIONS);
-  const date = generateDate().dayFormat;
-  const dateFullFormat = generateDate().dayFullFormat;
   const timeStart = generateDate().dayTimeStart;
   const timeEnd = generateDate().dayTimeEnd;
-  const timeDuration = dayjs.duration(dayjs(`2000-01-01 ${timeEnd}`).diff(dayjs(`2000-01-01 ${timeStart}`))).minutes();
 
   return {
     id: nanoid(),
@@ -63,11 +54,8 @@ export const generatePoint = () => {
       description: currentDestination.description,
       pictures: createPhotos(),
     },
-    date,
-    dateFullFormat,
     timeStart,
     timeEnd,
-    timeDuration,
     price: getRandomInteger(PRICE_FROM, PRICE_TO),
     offer: currentOffer.offers,
     isFavorite: Boolean(getRandomInteger(0, 1)),

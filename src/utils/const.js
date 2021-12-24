@@ -364,3 +364,9 @@ export const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
+
+export const DATEPICKER_DEFAULT_SETTING = {
+  enableTime: true,
+  'time_24hr': true,
+  dateFormat: 'd/m/y H:i',
+};
