@@ -8,17 +8,8 @@ const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
   </li>`).join('')}
 </ul>`;
 
-const createTimeDuration = (timeStart, timeEnd) => {
-  const timeDuration = timeEnd.diff(timeStart, 'm');
-  const minutesDuration = timeDuration % 60 > 0 ? `${timeDuration % 60}M` : '';
-  const hoursDuration = Math.floor(timeDuration / 60) % 24 > 0 ? `${Math.floor(timeDuration / 60) % 24}H ` : '';
-  const daysDuration = Math.floor((timeDuration / 60) / 24) > 0 ? `${Math.floor((timeDuration / 60) / 24)}D ` : '';
-
-  return daysDuration + hoursDuration + minutesDuration;
-};
-
 const createPointTemplate = (point) => {
-  const {type, price, destination, offer, timeStart, timeEnd} = point;
+  const {type, price, destination, offer, timeStart, timeEnd, createHumanizeTimeDuration} = point;
 
   const favoriteClassName = point.isFavorite ? 'event__favorite-btn--active' : '';
   const offerTemplate = offer ? createOfferTemplate(offer) : '';
@@ -36,7 +27,7 @@ const createPointTemplate = (point) => {
                   &mdash;
                   <time class="event__end-time" datetime="${timeEnd.format('YYYY-MM-DDTHH:mm')}">${timeEnd.format('HH:mm')}</time>
                 </p>
-                <p class="event__duration">${createTimeDuration(timeStart, timeEnd)}</p>
+                <p class="event__duration">${createHumanizeTimeDuration(timeStart, timeEnd)}</p>
               </div>
               <p class="event__price">
                 &euro;&nbsp;<span class="event__price-value">${price}</span>

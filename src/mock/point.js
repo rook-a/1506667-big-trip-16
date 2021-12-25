@@ -30,21 +30,34 @@ const createPhotos = () => {
 
 const generateDate = () => {
   const DAY_GAP = 7;
-  const daysGap = getRandomInteger(-DAY_GAP, DAY_GAP);
+  const daysGapStart = getRandomInteger(-DAY_GAP, 0);
+  const daysGapEnd = getRandomInteger(0, DAY_GAP);
 
-  const TIME_GAP = 30;
-  const timesGap = getRandomInteger(-TIME_GAP, TIME_GAP);
-  const dayTimeStart = dayjs().add(daysGap, 'd').add(timesGap, 'm');
-  const dayTimeEnd = dayjs().add(daysGap, 'd').add(timesGap, 'm');
+  const TIME_GAP = 35; // 35 чтобы при генерации появлялись часы
+  const timeGapStart = getRandomInteger(-TIME_GAP, 0);
+  const timeGapEnd = getRandomInteger(0, TIME_GAP);
+
+  const dayTimeStart = dayjs().add(daysGapStart, 'd').add(timeGapStart, 'm');
+  const dayTimeEnd = dayjs().add(daysGapEnd, 'd').add(timeGapEnd, 'm');
 
   return {dayTimeStart, dayTimeEnd};
+};
+
+const createHumanizeTimeDuration = (timeStart, timeEnd) => {
+  const minutesDuration = timeEnd.diff(timeStart, 'm') % 60 > 0 ? `${timeEnd.diff(timeStart, 'm') % 60}M` : '';
+  const hoursDuration = timeEnd.diff(timeStart, 'h') % 24 > 0 ? `${timeEnd.diff(timeStart, 'h') % 24}H` : '';
+  const daysDuration = timeEnd.diff(timeStart, 'd') > 0 ? `${timeEnd.diff(timeStart, 'd')}D` : '';
+
+  return daysDuration + hoursDuration + minutesDuration;
 };
 
 export const generatePoint = () => {
   const currentOffer = generateElement(OFFERS);
   const currentDestination = generateElement(DESTINATIONS);
-  const timeStart = generateDate().dayTimeStart;
-  const timeEnd = generateDate().dayTimeEnd;
+  const date = generateDate();
+  const timeStart = date.dayTimeStart;
+  const timeEnd = date.dayTimeEnd;
+  const timeDuration = date.dayTimeEnd.diff(date.dayTimeStart);
 
   return {
     id: nanoid(),
@@ -56,6 +69,8 @@ export const generatePoint = () => {
     },
     timeStart,
     timeEnd,
+    timeDuration,
+    createHumanizeTimeDuration,
     price: getRandomInteger(PRICE_FROM, PRICE_TO),
     offer: currentOffer.offers,
     isFavorite: Boolean(getRandomInteger(0, 1)),

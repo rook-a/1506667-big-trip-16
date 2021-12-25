@@ -247,9 +247,11 @@ export default class CreateEditPoint extends SmartView {
     this.#datepickerTimeStart = flatpickr(
       this.getElement.querySelector('#event-start-time-1'),
       Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
-        minDate: 'today',
+        maxDate: this._data.timeEnd.format('DD/MM/YYYY HH:mm'),
         defaultDate: this._data.timeStart.format('DD/MM/YYYY HH:mm'),
-        onChange: this.#onTimeStartChange,
+        defaultHour: this._data.timeStart.format('HH'),
+        defaultMinute: this._data.timeStart.format('mm'),
+        onClose: this.#onTimeStartChange,
       })
     );
   }
@@ -258,9 +260,11 @@ export default class CreateEditPoint extends SmartView {
     this.#datepickerTimeEnd = flatpickr(
       this.getElement.querySelector('#event-end-time-1'),
       Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
-        minDate: this._data.timeStart.format('MMM D'),
+        minDate: this._data.timeStart.format('DD/MM/YYYY HH:mm'),
         defaultDate: this._data.timeEnd.format('DD/MM/YYYY HH:mm'),
-        onChange: this.#onTimeEndChange,
+        defaultHour: this._data.timeEnd.format('HH'),
+        defaultMinute: this._data.timeEnd.format('mm'),
+        onClose: this.#onTimeEndChange,
       })
     );
   }
@@ -269,7 +273,7 @@ export default class CreateEditPoint extends SmartView {
     this.updateData({
       date: dayjs(userDate),
       timeStart: dayjs(userDate),
-      timeDuration: dayjs.duration(dayjs(userDate).diff(dayjs(this._data.timeEnd))).minutes(), // ПЕРЕПРОВЕРИТЬ / не уверен, что тут правильно считает
+      timeDuration: dayjs(userDate).diff(this._data.timeEnd),
     });
   }
 
@@ -277,7 +281,7 @@ export default class CreateEditPoint extends SmartView {
     this.updateData({
       date: dayjs(userDate),
       timeEnd: dayjs(userDate),
-      timeDuration: dayjs.duration(dayjs(userDate).diff(dayjs(this._data.timeStart))).minutes(),
+      timeDuration: dayjs(userDate).diff(this._data.timeStart),
     });
   }
 
