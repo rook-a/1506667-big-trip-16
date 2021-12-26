@@ -1,6 +1,5 @@
 import {getRandomInteger} from '../utils/utils.js';
 import {generateElement} from '../utils/utils.js';
-// import {getRandomElements} from '../utils/utils.js';
 import {OFFERS} from '../utils/const.js';
 import {DESTINATIONS} from '../utils/const.js';
 import {DESCRIPTIONS} from '../utils/const.js';
@@ -30,30 +29,35 @@ const createPhotos = () => {
 };
 
 const generateDate = () => {
-
   const DAY_GAP = 7;
-  const daysGap = getRandomInteger(-DAY_GAP, DAY_GAP);
+  const daysGapStart = getRandomInteger(-DAY_GAP, 0);
+  const daysGapEnd = getRandomInteger(0, DAY_GAP);
 
-  const day = dayjs().add(daysGap, 'day').toDate();
-  const dayFormat = dayjs(day).format('MMM D');
-  const dayFullFormat = dayjs(day).format('DD/MM/YY');
+  const TIME_GAP = 35; // 35 чтобы при генерации появлялись часы
+  const timeGapStart = getRandomInteger(-TIME_GAP, 0);
+  const timeGapEnd = getRandomInteger(0, TIME_GAP);
 
-  const TIME_GAP = 30;
-  const timesGap = getRandomInteger(-TIME_GAP, TIME_GAP);
-  const dayTimeStart = dayjs().add(timesGap, 'm').format('HH:mm');
-  const dayTimeEnd = dayjs().add(timesGap, 'm').format('HH:mm');
+  const dayTimeStart = dayjs().add(daysGapStart, 'd').add(timeGapStart, 'm');
+  const dayTimeEnd = dayjs().add(daysGapEnd, 'd').add(timeGapEnd, 'm');
 
-  return {dayFormat, dayFullFormat, dayTimeStart, dayTimeEnd};
+  return {dayTimeStart, dayTimeEnd};
+};
+
+const createHumanizeTimeDuration = (timeStart, timeEnd) => {
+  const minutesDuration = timeEnd.diff(timeStart, 'm') % 60 > 0 ? `${timeEnd.diff(timeStart, 'm') % 60}M` : '';
+  const hoursDuration = timeEnd.diff(timeStart, 'h') % 24 > 0 ? `${timeEnd.diff(timeStart, 'h') % 24}H` : '';
+  const daysDuration = timeEnd.diff(timeStart, 'd') > 0 ? `${timeEnd.diff(timeStart, 'd')}D` : '';
+
+  return daysDuration + hoursDuration + minutesDuration;
 };
 
 export const generatePoint = () => {
   const currentOffer = generateElement(OFFERS);
   const currentDestination = generateElement(DESTINATIONS);
-  const date = generateDate().dayFormat;
-  const dateFullFormat = generateDate().dayFullFormat;
-  const timeStart = generateDate().dayTimeStart;
-  const timeEnd = generateDate().dayTimeEnd;
-  const timeDuration = dayjs.duration(dayjs(`2000-01-01 ${timeEnd}`).diff(dayjs(`2000-01-01 ${timeStart}`))).minutes();
+  const date = generateDate();
+  const timeStart = date.dayTimeStart;
+  const timeEnd = date.dayTimeEnd;
+  const timeDuration = date.dayTimeEnd.diff(date.dayTimeStart);
 
   return {
     id: nanoid(),
@@ -63,11 +67,10 @@ export const generatePoint = () => {
       description: currentDestination.description,
       pictures: createPhotos(),
     },
-    date,
-    dateFullFormat,
     timeStart,
     timeEnd,
     timeDuration,
+    createHumanizeTimeDuration,
     price: getRandomInteger(PRICE_FROM, PRICE_TO),
     offer: currentOffer.offers,
     isFavorite: Boolean(getRandomInteger(0, 1)),

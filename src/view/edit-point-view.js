@@ -1,5 +1,9 @@
+import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import SmartView from './smart-view.js';
 import {OFFERS, DESTINATIONS} from '../utils/const.js';
+import {DATEPICKER_DEFAULT_SETTING} from '../utils/const.js';
 
 const createPictureTemplate = (pictures) => `<div class="event__photos-container">
     <div class="event__photos-tape">
@@ -28,7 +32,8 @@ const createOfferTemplate = (offers) => `<section class="event__section  event__
 const createDropdownCityTemplate = (citys) => `${citys.map(({name}) => `<option value="${name}"></option>`).join('')}`;
 
 const createEditPointTemplate = (point) => {
-  const {type, price, destination, dateFullFormat, timeStart, timeEnd} = point;
+  const {type, price, destination, timeStart, timeEnd} = point;
+
   const filterDescription = DESTINATIONS.find(({name}) => destination.name === name);
   const filterOffer = OFFERS.find(({eventType}) => type === eventType);
 
@@ -111,10 +116,10 @@ const createEditPointTemplate = (point) => {
 
                 <div class="event__field-group  event__field-group--time">
                   <label class="visually-hidden" for="event-start-time-1">From</label>
-                  <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFullFormat} ${timeStart}">
+                  <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${timeStart.format('DD/MM/YY HH:mm')}">
                   &mdash;
                   <label class="visually-hidden" for="event-end-time-1">To</label>
-                  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateFullFormat} ${timeEnd}">
+                  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${timeEnd.format('DD/MM/YY HH:mm')}">
                 </div>
 
                 <div class="event__field-group  event__field-group--price">
@@ -148,11 +153,16 @@ const createEditPointTemplate = (point) => {
 };
 
 export default class CreateEditPoint extends SmartView {
+  #datepickerTimeStart = null;
+  #datepickerTimeEnd = null;
+
   constructor(point) {
     super();
     this._data = CreateEditPoint.parsePointToData(point);
 
     this.#setInnerHandlers();
+    this.#setDatepickerTimeStart();
+    this.#setDatepickerTimeEnd();
   }
 
   get getTemplate() {
@@ -212,6 +222,8 @@ export default class CreateEditPoint extends SmartView {
     this.#setInnerHandlers();
     this.setOnEditPointClick(this._callback.pointClick);
     this.setOnFormSubmit(this._callback.formSubmit);
+    this.#setDatepickerTimeStart();
+    this.#setDatepickerTimeEnd();
   }
 
   #onCityInput = (evt) => {
@@ -229,5 +241,61 @@ export default class CreateEditPoint extends SmartView {
     this.updateData(
       CreateEditPoint.parsePointToData(point),
     );
+  }
+
+  #setDatepickerTimeStart = () => {
+    this.#datepickerTimeStart = flatpickr(
+      this.getElement.querySelector('#event-start-time-1'),
+      Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
+        maxDate: this._data.timeEnd.format('DD/MM/YYYY HH:mm'),
+        defaultDate: this._data.timeStart.format('DD/MM/YYYY HH:mm'),
+        defaultHour: this._data.timeStart.format('HH'),
+        defaultMinute: this._data.timeStart.format('mm'),
+        onClose: this.#onTimeStartChange,
+      })
+    );
+  }
+
+  #setDatepickerTimeEnd = () => {
+    this.#datepickerTimeEnd = flatpickr(
+      this.getElement.querySelector('#event-end-time-1'),
+      Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
+        minDate: this._data.timeStart.format('DD/MM/YYYY HH:mm'),
+        defaultDate: this._data.timeEnd.format('DD/MM/YYYY HH:mm'),
+        defaultHour: this._data.timeEnd.format('HH'),
+        defaultMinute: this._data.timeEnd.format('mm'),
+        onClose: this.#onTimeEndChange,
+      })
+    );
+  }
+
+  #onTimeStartChange = ([userDate]) => {
+    this.updateData({
+      date: dayjs(userDate),
+      timeStart: dayjs(userDate),
+      timeDuration: dayjs(userDate).diff(this._data.timeEnd),
+    });
+  }
+
+  #onTimeEndChange = ([userDate]) => {
+    this.updateData({
+      date: dayjs(userDate),
+      timeEnd: dayjs(userDate),
+      timeDuration: dayjs(userDate).diff(this._data.timeStart),
+    });
+  }
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepickerTimeStart) {
+      this.#datepickerTimeStart.destroy();
+      this.#datepickerTimeStart = null;
+    }
+
+    if (this.#datepickerTimeEnd) {
+      this.#datepickerTimeEnd.destroy();
+      this.#datepickerTimeEnd = null;
+    }
   }
 }

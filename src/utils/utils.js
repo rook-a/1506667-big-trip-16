@@ -41,11 +41,11 @@ export const updateItem = (items, update) => {
 export const sortByPrice = (pointFirst, pointSecond) => pointSecond.price - pointFirst.price;
 
 export const sortByDays = (pointFirst, pointSecond) => {
-  if (dayjs(pointFirst.date).isBefore(pointSecond.date)) {
+  if (dayjs(pointFirst.timeStart).isBefore(pointSecond.timeStart)) {
     return -1;
   }
 
-  if (dayjs(pointFirst.date).isAfter(pointSecond.date)) {
+  if (dayjs(pointFirst.timeStart).isAfter(pointSecond.timeStart)) {
     return 1;
   }
 
