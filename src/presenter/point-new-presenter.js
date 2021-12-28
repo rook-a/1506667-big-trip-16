@@ -20,6 +20,7 @@ export default class PointNewPresenter {
 
     this.#editPointComponent = new CreateEditPoint(point);
     this.#editPointComponent.setOnFormSubmit(this.#onClickToSave);
+    this.#editPointComponent.setOnEditPointClick(this.#onClickToDelete);
     this.#editPointComponent.setOnDeleteClick(this.#onClickToDelete);
     this.#editPointComponent.setDatepickerTimeStart();
     this.#editPointComponent.setDatepickerTimeEnd();
