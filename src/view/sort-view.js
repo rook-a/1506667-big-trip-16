@@ -1,7 +1,7 @@
 import {SortType} from '../utils/const.js';
 import AbstractView from './abstract-view.js';
 
-const createSortTemplate = (defaultSort) => (
+const createSortTemplate = (currentSortType) => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
 
     ${Object.values(SortType).map((item) => `<div class="trip-sort__item  trip-sort__item--${item}">
@@ -12,7 +12,7 @@ const createSortTemplate = (defaultSort) => (
         type="radio"
         name="trip-sort"
         value="${item}"
-        ${defaultSort === item ? 'checked' : ''}
+        ${currentSortType === item ? 'checked' : ''}
         ${SortType.EVENT === item || SortType.OFFERS === item ? 'disabled' : ''}>
 
       <label class="trip-sort__btn" for="sort-${item}">${item}</label>
@@ -23,15 +23,15 @@ const createSortTemplate = (defaultSort) => (
 );
 
 export default class CreateSort extends AbstractView {
-  #defaultSort = null;
+  #currentSortType = null;
 
-  constructor(defaultSort) {
+  constructor(currentSortType) {
     super();
-    this.#defaultSort = defaultSort;
+    this.#currentSortType = currentSortType;
   }
 
   get getTemplate() {
-    return createSortTemplate(this.#defaultSort);
+    return createSortTemplate(this.#currentSortType);
   }
 
   setOnSortChange = (callback) => {

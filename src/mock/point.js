@@ -1,13 +1,9 @@
 import {getRandomInteger} from '../utils/utils.js';
 import {generateElement} from '../utils/utils.js';
-import {OFFERS} from '../utils/const.js';
-import {DESTINATIONS} from '../utils/const.js';
-import {DESCRIPTIONS} from '../utils/const.js';
+import {OFFERS, DESTINATIONS, DESCRIPTIONS} from '../utils/const.js';
+import {createHumanizeTimeDuration} from '../utils/utils.js';
 import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
 import {nanoid} from 'nanoid';
-
-dayjs.extend(duration);
 
 const PRICE_FROM = 0;
 const PRICE_TO = 1000;
@@ -43,14 +39,6 @@ const generateDate = () => {
   return {dayTimeStart, dayTimeEnd};
 };
 
-const createHumanizeTimeDuration = (timeStart, timeEnd) => {
-  const minutesDuration = timeEnd.diff(timeStart, 'm') % 60 > 0 ? `${timeEnd.diff(timeStart, 'm') % 60}M` : '';
-  const hoursDuration = timeEnd.diff(timeStart, 'h') % 24 > 0 ? `${timeEnd.diff(timeStart, 'h') % 24}H` : '';
-  const daysDuration = timeEnd.diff(timeStart, 'd') > 0 ? `${timeEnd.diff(timeStart, 'd')}D` : '';
-
-  return daysDuration + hoursDuration + minutesDuration;
-};
-
 export const generatePoint = () => {
   const currentOffer = generateElement(OFFERS);
   const currentDestination = generateElement(DESTINATIONS);
@@ -76,5 +64,21 @@ export const generatePoint = () => {
     isFavorite: Boolean(getRandomInteger(0, 1)),
   };
 };
+
+// export const defaultPoint = {
+//   id: '',
+//   type: 'taxi',
+//   destination: {
+//     name: 'Amsterdam',
+//     description: 'Bla bla bla',
+//     pictures: [],
+//   },
+//   timeStart: dayjs(),
+//   timeEnd: dayjs().add(3, 'd'),
+//   timeDuration: '',
+//   price: 5,
+//   offer: [],
+//   isFavorite: false,
+// };
 
 // console.log(generatePoint());
