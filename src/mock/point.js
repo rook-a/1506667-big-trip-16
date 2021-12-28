@@ -65,20 +65,21 @@ export const generatePoint = () => {
   };
 };
 
-// export const defaultPoint = {
-//   id: '',
-//   type: 'taxi',
-//   destination: {
-//     name: 'Amsterdam',
-//     description: 'Bla bla bla',
-//     pictures: [],
-//   },
-//   timeStart: dayjs(),
-//   timeEnd: dayjs().add(3, 'd'),
-//   timeDuration: '',
-//   price: 5,
-//   offer: [],
-//   isFavorite: false,
-// };
+export const defaultPoint = {
+  id: '',
+  type: 'taxi',
+  destination: {
+    name: 'Amsterdam',
+    description: 'Bla bla bla',
+    pictures: [],
+  },
+  timeStart: dayjs(),
+  timeEnd: dayjs().add(3, 'd'),
+  timeDuration: '',
+  createHumanizeTimeDuration,
+  price: 5,
+  offer: [],
+  isFavorite: false,
+};
 
 // console.log(generatePoint());

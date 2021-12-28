@@ -7,6 +7,7 @@ import {RenderPosition, render, remove} from '../utils/render.js';
 import {filters} from '../utils/filter.js';
 import {DEFAULT_VALUE, UpdateType, UserAction, FilterType, SortType} from '../utils/const.js';
 import {sortByPrice, sortByDays, sortByTime} from '../utils/utils.js';
+import {defaultPoint} from '../mock/point.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -58,7 +59,7 @@ export default class TripPresenter {
   createPoint = () => {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#pointNewPresenter.init();
+    this.#pointNewPresenter.init(defaultPoint);
   }
 
   #onModeChange = () => {

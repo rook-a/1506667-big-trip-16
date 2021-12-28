@@ -13,12 +13,12 @@ export default class PointNewPresenter {
     this.#changeDate = changeData;
   }
 
-  init() {
-    if (this.#listPointContainer !== null) {
+  init(point) {
+    if (this.#editPointComponent !== null) {
       return;
     }
 
-    this.#editPointComponent = new CreateEditPoint();
+    this.#editPointComponent = new CreateEditPoint(point);
     this.#editPointComponent.setOnFormSubmit(this.#onClickToSave);
     this.#editPointComponent.setOnDeleteClick(this.#onClickToDelete);
     this.#editPointComponent.setDatepickerTimeStart();
