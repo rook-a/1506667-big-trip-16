@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 import SmartView from './smart-view.js';
 import {OFFERS, DESTINATIONS} from '../utils/const.js';
 import {DATEPICKER_DEFAULT_SETTING} from '../utils/const.js';
@@ -108,7 +109,7 @@ const createEditPointTemplate = (point) => {
                   <label class="event__label  event__type-output" for="event-destination-1">
                     ${type}
                   </label>
-                  <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+                  <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-1">
                   <datalist class="event__city-list" id="destination-list-1">
                     ${cityChoiceTemplate}
                   </datalist>
@@ -127,7 +128,7 @@ const createEditPointTemplate = (point) => {
                     <span class="visually-hidden">Price</span>
                     &euro;
                   </label>
-                  <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+                  <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(`${price}`)}">
                 </div>
 
                 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -161,8 +162,8 @@ export default class CreateEditPoint extends SmartView {
     this._data = CreateEditPoint.parsePointToData(point);
 
     this.#setInnerHandlers();
-    this.#setDatepickerTimeStart();
-    this.#setDatepickerTimeEnd();
+    this.setDatepickerTimeStart();
+    this.setDatepickerTimeEnd();
   }
 
   get getTemplate() {
@@ -187,6 +188,7 @@ export default class CreateEditPoint extends SmartView {
   #formSubmit = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(CreateEditPoint.parseDataToPoint(this._data));
+    // console.log(this._data); // тут смотрел состояние после сохранения
   }
 
   static parsePointToData = (point) => ({...point})
@@ -203,11 +205,25 @@ export default class CreateEditPoint extends SmartView {
 
   #onCityChange = (evt) => {
     evt.preventDefault();
-    this.updateData({
-      destination: {
-        name: evt.target.value,
-        description: this._data.destination.description,
-        pictures: this._data.destination.pictures,
+    const priceInput = this.getElement.querySelector('.event__input--destination');
+    const saveBtn = this.getElement.querySelector('.event__save-btn');
+
+    DESTINATIONS.map(({name}) => {
+      if (name === evt.target.value) {
+        priceInput.setCustomValidity('');
+        priceInput.reportValidity();
+        saveBtn.disabled = false;
+        this.updateData({
+          destination: {
+            name: evt.target.value,
+            description: this._data.destination.description,
+            pictures: this._data.destination.pictures,
+          }
+        });
+      } else {
+        priceInput.setCustomValidity('Invalid value. Choose a city from the list');
+        priceInput.reportValidity();
+        saveBtn.disabled = true;
       }
     });
   }
@@ -215,26 +231,36 @@ export default class CreateEditPoint extends SmartView {
   #setInnerHandlers = () => {
     this.getElement.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
     this.getElement.querySelector('.event__field-group--destination').addEventListener('change', this.#onCityChange);
-    this.getElement.querySelector('.event__input--destination').addEventListener('input', this.#onCityInput);
+    this.getElement.querySelector('.event__input--price').addEventListener('input', this.#onPriceInput);
   }
 
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setOnEditPointClick(this._callback.pointClick);
     this.setOnFormSubmit(this._callback.formSubmit);
-    this.#setDatepickerTimeStart();
-    this.#setDatepickerTimeEnd();
+    this.setDatepickerTimeStart();
+    this.setDatepickerTimeEnd();
+    this.setOnDeleteClick(this._callback.deleteClick);
   }
 
-  #onCityInput = (evt) => {
+  #onPriceInput = (evt) => {
     evt.preventDefault();
-    this.updateData({
-      destination: {
-        name: evt.target.value,
-        description: this._data.destination.description,
-        pictures: this._data.destination.pictures,
-      }
-    }, true);
+    const priceValue = Number(evt.target.value) > 0 ? evt.target.value : '';
+    const priceInput = this.getElement.querySelector('.event__input--price');
+    const saveBtn = this.getElement.querySelector('.event__save-btn');
+
+    if (!priceValue) {
+      priceInput.setCustomValidity('Invalid value. Need more money!');
+      priceInput.reportValidity();
+      saveBtn.disabled = true;
+    } else {
+      priceInput.setCustomValidity('');
+      priceInput.reportValidity();
+      saveBtn.disabled = false;
+      this.updateData({
+        price: evt.target.value,
+      });
+    }
   }
 
   reset = (point) => {
@@ -243,7 +269,7 @@ export default class CreateEditPoint extends SmartView {
     );
   }
 
-  #setDatepickerTimeStart = () => {
+  setDatepickerTimeStart = () => {
     this.#datepickerTimeStart = flatpickr(
       this.getElement.querySelector('#event-start-time-1'),
       Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
@@ -256,7 +282,7 @@ export default class CreateEditPoint extends SmartView {
     );
   }
 
-  #setDatepickerTimeEnd = () => {
+  setDatepickerTimeEnd = () => {
     this.#datepickerTimeEnd = flatpickr(
       this.getElement.querySelector('#event-end-time-1'),
       Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
@@ -274,7 +300,7 @@ export default class CreateEditPoint extends SmartView {
       date: dayjs(userDate),
       timeStart: dayjs(userDate),
       timeDuration: dayjs(userDate).diff(this._data.timeEnd),
-    });
+    }, true);
   }
 
   #onTimeEndChange = ([userDate]) => {
@@ -282,7 +308,17 @@ export default class CreateEditPoint extends SmartView {
       date: dayjs(userDate),
       timeEnd: dayjs(userDate),
       timeDuration: dayjs(userDate).diff(this._data.timeStart),
-    });
+    }, true);
+  }
+
+  setOnDeleteClick = (callback) => {
+    this._callback.deleteClick = callback;
+    this.getElement.querySelector('.event__reset-btn').addEventListener('click', this.#onFormDeleteClick);
+  }
+
+  #onFormDeleteClick = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(CreateEditPoint.parseDataToPoint(this._data));
   }
 
   removeElement = () => {

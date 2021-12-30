@@ -72,6 +72,7 @@ export default class CreatePoint extends AbstractView {
   #pointClick = (evt) => {
     evt.preventDefault();
     this._callback.pointClick();
+    // console.log(this.#point); //тут смотрел начальное состояние точки
   }
 
   #favoriteClick = (evt) => {

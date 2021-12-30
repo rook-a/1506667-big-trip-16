@@ -24,20 +24,6 @@ export const getRandomElements = (elements) => {
   return arrayElements;
 };
 
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
 export const sortByPrice = (pointFirst, pointSecond) => pointSecond.price - pointFirst.price;
 
 export const sortByDays = (pointFirst, pointSecond) => {
@@ -63,3 +49,13 @@ export const sortByTime = (pointFirst, pointSecond) => {
 
   return 0;
 };
+
+export const createHumanizeTimeDuration = (timeStart, timeEnd) => {
+  const minutesDuration = timeEnd.diff(timeStart, 'm') % 60 > 0 ? `${timeEnd.diff(timeStart, 'm') % 60}M` : '';
+  const hoursDuration = timeEnd.diff(timeStart, 'h') % 24 > 0 ? `${timeEnd.diff(timeStart, 'h') % 24}H` : '';
+  const daysDuration = timeEnd.diff(timeStart, 'd') > 0 ? `${timeEnd.diff(timeStart, 'd')}D` : '';
+
+  return daysDuration + hoursDuration + minutesDuration;
+};
+
+export const isDatesEqual = (dateFirst, dateSecond) => (dateFirst === null && dateSecond === null) || dayjs(dateFirst).isSame(dateSecond);

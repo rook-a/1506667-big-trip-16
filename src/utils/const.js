@@ -335,11 +335,11 @@ export const DESCRIPTIONS = [
   'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
 ];
 
-export const FILTERS = [
-  'everything',
-  'future',
-  'past',
-];
+export const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
 
 export const MENU_TABS = [
   'Table',
@@ -356,7 +356,7 @@ export const SortType = {
 
 export const DEFAULT_VALUE = {
   menu: MENU_TABS[0],
-  filter: FILTERS[0],
+  filter: FilterType.EVERYTHING,
   sorting: SortType.DAY,
 };
 
@@ -369,4 +369,16 @@ export const DATEPICKER_DEFAULT_SETTING = {
   enableTime: true,
   'time_24hr': true,
   dateFormat: 'd/m/y H:i',
+};
+
+export const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
 };

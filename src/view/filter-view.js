@@ -1,16 +1,17 @@
-import {FILTERS} from '../utils/const.js';
+import {FilterType} from '../utils/const.js';
 import AbstractView from './abstract-view.js';
 
-const createFiltersTemplate = (defaultFilter) => (
+const createFiltersTemplate = (currentFilterType) => (
   `<form class="trip-filters" action="#" method="get">
 
-    ${FILTERS.map((filter) => `<div class="trip-filters__filter">
+    ${Object.values(FilterType).map((filter) => `<div class="trip-filters__filter">
       <input
         id="filter-${filter}"
         class="trip-filters__filter-input  visually-hidden"
         type="radio"
         name="trip-filter"
-        value="${filter}" ${defaultFilter === filter ? 'checked' : ''}>
+        value="${filter}"
+        ${currentFilterType === filter ? 'checked' : ''}>
 
       <label class="trip-filters__filter-label" for="filter-${filter}">${filter}</label>
     </div>`).join('')}
@@ -19,15 +20,25 @@ const createFiltersTemplate = (defaultFilter) => (
   </form>`
 );
 
-export default class CreateFilters extends AbstractView{
-  #defaultFilter = null;
+export default class CreateFilters extends AbstractView {
+  #currentFilterType = null;
 
-  constructor(defaultFilter) {
+  constructor(currentFilterType) {
     super();
-    this.#defaultFilter = defaultFilter;
+    this.#currentFilterType = currentFilterType;
   }
 
   get getTemplate() {
-    return createFiltersTemplate(this.#defaultFilter);
+    return createFiltersTemplate(this.#currentFilterType);
+  }
+
+  setOnFilterTypeChange = (callback) => {
+    this._callback.filterTypeChange = callback;
+    this.getElement.addEventListener('change', this.#onFilterTypeChange);
+  }
+
+  #onFilterTypeChange = (evt) => {
+    evt.preventDefault();
+    this._callback.filterTypeChange(evt.target.value);
   }
 }
