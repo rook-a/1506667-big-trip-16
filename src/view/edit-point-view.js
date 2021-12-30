@@ -188,6 +188,7 @@ export default class CreateEditPoint extends SmartView {
   #formSubmit = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(CreateEditPoint.parseDataToPoint(this._data));
+    // console.log(this._data); // тут смотрел состояние после сохранения
   }
 
   static parsePointToData = (point) => ({...point})
@@ -244,7 +245,6 @@ export default class CreateEditPoint extends SmartView {
 
   #onPriceInput = (evt) => {
     evt.preventDefault();
-
     const priceValue = Number(evt.target.value) > 0 ? evt.target.value : '';
     const priceInput = this.getElement.querySelector('.event__input--price');
     const saveBtn = this.getElement.querySelector('.event__save-btn');
@@ -259,7 +259,7 @@ export default class CreateEditPoint extends SmartView {
       saveBtn.disabled = false;
       this.updateData({
         price: evt.target.value,
-      }, true);
+      });
     }
   }
 
@@ -300,7 +300,7 @@ export default class CreateEditPoint extends SmartView {
       date: dayjs(userDate),
       timeStart: dayjs(userDate),
       timeDuration: dayjs(userDate).diff(this._data.timeEnd),
-    });
+    }, true);
   }
 
   #onTimeEndChange = ([userDate]) => {
@@ -308,7 +308,7 @@ export default class CreateEditPoint extends SmartView {
       date: dayjs(userDate),
       timeEnd: dayjs(userDate),
       timeDuration: dayjs(userDate).diff(this._data.timeStart),
-    });
+    }, true);
   }
 
   setOnDeleteClick = (callback) => {

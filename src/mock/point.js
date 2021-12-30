@@ -73,7 +73,7 @@ export const defaultPoint = {
     description: 'Bla bla bla',
     pictures: [],
   },
-  timeStart: dayjs(),
+  timeStart: dayjs().add(1, 'd'),
   timeEnd: dayjs().add(3, 'd'),
   timeDuration: '',
   createHumanizeTimeDuration,

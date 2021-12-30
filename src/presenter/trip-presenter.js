@@ -13,12 +13,12 @@ export default class TripPresenter {
   #tripEventsContainer = null;
   #tripFiltersContainer = null;
   #pointsModel = null;
-  #sortConponent = null;
+  #sortComponent = null;
   #filterModel = null;
   #noPointMessageComponent = null;
   #pointNewPresenter = null;
   #pointPresenter = new Map();
-  #currentfilterType = FilterType.EVERYTHING;
+  #currentFilterType = FilterType.EVERYTHING;
   #currentSortType = DEFAULT_VALUE.sorting;
 
   #listPointComponent = new ListPoinView();
@@ -36,9 +36,9 @@ export default class TripPresenter {
   }
 
   get points() {
-    this.#currentfilterType = this.#filterModel.filter;
+    this.#currentFilterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    const filteredPoints = filters[this.#currentfilterType](points);
+    const filteredPoints = filters[this.#currentFilterType](points);
 
     switch (this.#currentSortType) {
       case SortType.DAY:
@@ -109,10 +109,10 @@ export default class TripPresenter {
   }
 
   #renderSort = () => {
-    this.#sortConponent = new CreateSort(this.#currentSortType);
-    this.#sortConponent.setOnSortChange(this.#onSortChange);
+    this.#sortComponent = new CreateSort(this.#currentSortType);
+    this.#sortComponent.setOnSortChange(this.#onSortChange);
 
-    render(this.#tripEventsContainer, this.#sortConponent, RenderPosition.BEFOREEND);
+    render(this.#tripEventsContainer, this.#sortComponent, RenderPosition.BEFOREEND);
   }
 
   #renderPoint = (point) => {
@@ -128,7 +128,7 @@ export default class TripPresenter {
   }
 
   #renderNoPointMessage = () => {
-    this.#noPointMessageComponent = new CreateNoPointMessage(this.#currentfilterType);
+    this.#noPointMessageComponent = new CreateNoPointMessage(this.#currentFilterType);
     render(this.#tripEventsContainer, this.#noPointMessageComponent, RenderPosition.BEFOREEND);
   }
 
@@ -141,7 +141,7 @@ export default class TripPresenter {
     this.#pointPresenter.clear();
     this.#pointNewPresenter.destroy();
 
-    remove(this.#sortConponent);
+    remove(this.#sortComponent);
     remove(this.#listPointComponent);
 
     if (this.#noPointMessageComponent) {

@@ -7,6 +7,7 @@ import {DEFAULT_VALUE} from './utils/const.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
+import CreateAddButton from './view/add-button-view.js';
 
 const POINTS_COUNT = 20;
 
@@ -26,13 +27,13 @@ const filterModel = new FilterModel();
 const tripPresenter = new TripPresenter(tripEventsContainer, tripFiltersContainer, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripFiltersContainer, filterModel);
 
+const addButton = new CreateAddButton();
+addButton.setOnClickAddButton(tripPresenter.createPoint);
+
+render(tripInfoContainer, addButton, RenderPosition.BEFOREEND);
+
 render(tripInfoContainer, new CreateTripInfo(), RenderPosition.AFTERBEGIN);
 render(siteMenuContainer, new CreateSiteMenu(DEFAULT_VALUE.menu), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 tripPresenter.init();
-
-document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-  evt.preventDefault();
-  tripPresenter.createPoint();
-});

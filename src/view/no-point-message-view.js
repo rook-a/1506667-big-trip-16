@@ -17,12 +17,12 @@ const createNoPointMessageTemplate = (filterType) => {
   );
 };
 export default class CreateNoPointMessage extends AbstractView {
-  constructor(data) {
+  constructor(filterType) {
     super();
-    this._data = data;
+    this._filterType = filterType;
   }
 
   get getTemplate() {
-    return createNoPointMessageTemplate(this._data);
+    return createNoPointMessageTemplate(this._filterType);
   }
 }
