@@ -3,8 +3,8 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 import SmartView from './smart-view.js';
-import {OFFERS, DESTINATIONS} from '../utils/const.js';
-import {DATEPICKER_DEFAULT_SETTING} from '../utils/const.js';
+import {OFFERS, DESTINATIONS, DATEPICKER_DEFAULT_SETTING} from '../utils/const.js';
+
 
 const createPictureTemplate = (pictures) => `<div class="event__photos-container">
     <div class="event__photos-tape">
@@ -15,15 +15,15 @@ const createPictureTemplate = (pictures) => `<div class="event__photos-container
 const createDescriptionTemplate = ({description}) => `<p class="event__destination-description">${description}</p>`;
 
 const createOfferCheckboxTemplate = ({offers}) => `<div class="event__available-offers">
-    ${offers.map(({id, name, title, price}) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${name}">
-      <label class="event__offer-label" for="${id}">
-          <span class="event__offer-title">${title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${price}</span>
-      </label>
-    </div>`).join('')}
-  </div>`;
+  ${offers.map(({id, name, title, price}) => `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${name}">
+    <label class="event__offer-label" for="${id}">
+        <span class="event__offer-title">${title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+    </label>
+  </div>`).join('')}
+</div>`;
 
 const createOfferTemplate = (offers) => `<section class="event__section  event__section--offers">
   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -162,8 +162,6 @@ export default class CreateEditPoint extends SmartView {
     this._data = CreateEditPoint.parsePointToData(point);
 
     this.#setInnerHandlers();
-    this.setDatepickerTimeStart();
-    this.setDatepickerTimeEnd();
   }
 
   get getTemplate() {
@@ -188,7 +186,6 @@ export default class CreateEditPoint extends SmartView {
   #formSubmit = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(CreateEditPoint.parseDataToPoint(this._data));
-    // console.log(this._data); // тут смотрел состояние после сохранения
   }
 
   static parsePointToData = (point) => ({...point})
@@ -238,8 +235,6 @@ export default class CreateEditPoint extends SmartView {
     this.#setInnerHandlers();
     this.setOnEditPointClick(this._callback.pointClick);
     this.setOnFormSubmit(this._callback.formSubmit);
-    this.setDatepickerTimeStart();
-    this.setDatepickerTimeEnd();
     this.setOnDeleteClick(this._callback.deleteClick);
   }
 
@@ -273,7 +268,6 @@ export default class CreateEditPoint extends SmartView {
     this.#datepickerTimeStart = flatpickr(
       this.getElement.querySelector('#event-start-time-1'),
       Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
-        maxDate: this._data.timeEnd.format('DD/MM/YYYY HH:mm'),
         defaultDate: this._data.timeStart.format('DD/MM/YYYY HH:mm'),
         defaultHour: this._data.timeStart.format('HH'),
         defaultMinute: this._data.timeStart.format('mm'),
@@ -296,11 +290,24 @@ export default class CreateEditPoint extends SmartView {
   }
 
   #onTimeStartChange = ([userDate]) => {
-    this.updateData({
-      date: dayjs(userDate),
-      timeStart: dayjs(userDate),
-      timeDuration: dayjs(userDate).diff(this._data.timeEnd),
-    }, true);
+    const dateStartinput = this.getElement.querySelector('#event-start-time-1');
+    const saveBtn = this.getElement.querySelector('.event__save-btn');
+
+    if (dayjs([userDate]).isAfter(this._data.timeEnd)) {
+      dateStartinput.setCustomValidity('Invalid value'); //не показывает валидацию
+      dateStartinput.reportValidity();
+      saveBtn.disabled = true;
+    } else {
+      dateStartinput.setCustomValidity('');
+      dateStartinput.reportValidity();
+      saveBtn.disabled = false;
+
+      this.updateData({
+        date: dayjs(userDate),
+        timeStart: dayjs(userDate),
+        timeDuration: dayjs(userDate).diff(this._data.timeEnd),
+      }, true);
+    }
   }
 
   #onTimeEndChange = ([userDate]) => {

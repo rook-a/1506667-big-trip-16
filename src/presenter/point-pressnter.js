@@ -97,6 +97,8 @@ export default class PointPresenter {
 
   #onClick = () => {
     this.#replacePointToForm();
+    this.#editPointComponent.setDatepickerTimeStart();
+    this.#editPointComponent.setDatepickerTimeEnd();
   }
 
   #onClickToSave = (update) => {
