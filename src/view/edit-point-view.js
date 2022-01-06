@@ -3,8 +3,7 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 import SmartView from './smart-view.js';
-import {OFFERS, DESTINATIONS, DATEPICKER_DEFAULT_SETTING} from '../utils/const.js';
-
+import {DATEPICKER_DEFAULT_SETTING} from '../utils/const.js';
 
 const createPictureTemplate = (pictures) => `<div class="event__photos-container">
     <div class="event__photos-tape">
@@ -12,12 +11,12 @@ const createPictureTemplate = (pictures) => `<div class="event__photos-container
     </div>
   </div>`;
 
-const createDescriptionTemplate = ({description}) => `<p class="event__destination-description">${description}</p>`;
+const createDescriptionTemplate = ({description}) => description ? `<p class="event__destination-description">${description}</p>` : '';
 
 const createOfferCheckboxTemplate = ({offers}) => `<div class="event__available-offers">
-  ${offers.map(({id, name, title, price}) => `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="${id}" type="checkbox" name="${name}">
-    <label class="event__offer-label" for="${id}">
+  ${offers.map(({id, title, price}) => `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="${title}-${id}" type="checkbox" name="${title}">
+    <label class="event__offer-label" for="${title}-${id}">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${price}</span>
@@ -25,23 +24,38 @@ const createOfferCheckboxTemplate = ({offers}) => `<div class="event__available-
   </div>`).join('')}
 </div>`;
 
-const createOfferTemplate = (offers) => `<section class="event__section  event__section--offers">
+const createOfferTemplate = (point) => point.offers.length > 0 ? `<section class="event__section  event__section--offers">
   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-    ${createOfferCheckboxTemplate(offers)}
-  </section>`;
+    ${createOfferCheckboxTemplate(point)}
+  </section>` : '';
 
 const createDropdownCityTemplate = (citys) => `${citys.map(({name}) => `<option value="${name}"></option>`).join('')}`;
 
-const createEditPointTemplate = (point) => {
+const createTypeTemplate = (types) => `<div class="event__type-list">
+    <fieldset class="event__type-group">
+      <legend class="visually-hidden">Event type</legend>
+
+      ${types.map(({type}) => `<div class="event__type-item">
+        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+        <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
+      </div>`).join('')}
+
+    </fieldset>
+  </div>`;
+
+const createEditPointTemplate = (point, OFFERS, DESTINATION) => {
+  // console.log('OFFERS', OFFERS);
+  // console.log('DESTINATION', DESTINATION);
   const {type, price, destination, timeStart, timeEnd} = point;
-
-  const filterDescription = DESTINATIONS.find(({name}) => destination.name === name);
-  const filterOffer = OFFERS.find(({eventType}) => type === eventType);
-
-  const cityChoiceTemplate = createDropdownCityTemplate(DESTINATIONS);
+  // console.log('point', point);
+  const filterDescription = DESTINATION.find(({name}) => destination.name === name);
+  const filterPoint = OFFERS.find((item) => item.type === type);
+  // console.log('filterOffer', filterOffer);
+  const cityChoiceTemplate = createDropdownCityTemplate(DESTINATION);
   const picturesTemplate = destination.pictures ? createPictureTemplate(destination.pictures) : '';
   const descriptionTemplate = createDescriptionTemplate(filterDescription);
-  const offerTemplate = createOfferTemplate(filterOffer);
+  const offerTemplate = createOfferTemplate(filterPoint);
+  const typeTemplate = createTypeTemplate(OFFERS);
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
@@ -52,57 +66,7 @@ const createEditPointTemplate = (point) => {
                     <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                   </label>
                   <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
-                  <div class="event__type-list">
-                    <fieldset class="event__type-group">
-                      <legend class="visually-hidden">Event type</legend>
-
-                      <div class="event__type-item">
-                        <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                        <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-                      </div>
-
-                      <div class="event__type-item">
-                        <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                        <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-                      </div>
-
-                      <div class="event__type-item">
-                        <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                        <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-                      </div>
-
-                      <div class="event__type-item">
-                        <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                        <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-                      </div>
-
-                      <div class="event__type-item">
-                        <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                        <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-                      </div>
-
-                      <div class="event__type-item">
-                        <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
-                        <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-                      </div>
-
-                      <div class="event__type-item">
-                        <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                        <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-                      </div>
-
-                      <div class="event__type-item">
-                        <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                        <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-                      </div>
-
-                      <div class="event__type-item">
-                        <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                        <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-                      </div>
-                    </fieldset>
-                  </div>
+                  ${typeTemplate}
                 </div>
 
                 <div class="event__field-group  event__field-group--destination">
@@ -156,16 +120,20 @@ const createEditPointTemplate = (point) => {
 export default class CreateEditPoint extends SmartView {
   #datepickerTimeStart = null;
   #datepickerTimeEnd = null;
+  #OFFERS = null;
+  #DESTINATION = null;
 
-  constructor(point) {
+  constructor(point, OFFERS, DESTINATION) {
     super();
+    this.#OFFERS = OFFERS;
+    this.#DESTINATION = DESTINATION;
     this._data = CreateEditPoint.parsePointToData(point);
 
     this.#setInnerHandlers();
   }
 
   get getTemplate() {
-    return createEditPointTemplate(this._data);
+    return createEditPointTemplate(this._data, this.#OFFERS, this.#DESTINATION);
   }
 
   setOnEditPointClick = (callback) => {
@@ -196,7 +164,7 @@ export default class CreateEditPoint extends SmartView {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
-      offer: OFFERS.find(({eventType}) => evt.target.value === eventType).offers,
+      offer: this.#OFFERS.find(({type}) => evt.target.value === type).offers,
     });
   }
 
@@ -205,7 +173,9 @@ export default class CreateEditPoint extends SmartView {
     const priceInput = this.getElement.querySelector('.event__input--destination');
     const saveBtn = this.getElement.querySelector('.event__save-btn');
 
-    DESTINATIONS.map(({name}) => {
+    this.#DESTINATION.map((destination) => {
+      const {name, description, pictures} = destination;
+
       if (name === evt.target.value) {
         priceInput.setCustomValidity('');
         priceInput.reportValidity();
@@ -213,8 +183,8 @@ export default class CreateEditPoint extends SmartView {
         this.updateData({
           destination: {
             name: evt.target.value,
-            description: this._data.destination.description,
-            pictures: this._data.destination.pictures,
+            description: description,
+            pictures: pictures,
           }
         });
       } else {
@@ -236,6 +206,8 @@ export default class CreateEditPoint extends SmartView {
     this.setOnEditPointClick(this._callback.pointClick);
     this.setOnFormSubmit(this._callback.formSubmit);
     this.setOnDeleteClick(this._callback.deleteClick);
+    this.setDatepickerTimeStart();
+    this.setDatepickerTimeEnd();
   }
 
   #onPriceInput = (evt) => {
@@ -253,7 +225,7 @@ export default class CreateEditPoint extends SmartView {
       priceInput.reportValidity();
       saveBtn.disabled = false;
       this.updateData({
-        price: evt.target.value,
+        price: Number(evt.target.value),
       });
     }
   }
@@ -292,9 +264,9 @@ export default class CreateEditPoint extends SmartView {
   #onTimeStartChange = ([userDate]) => {
     const dateStartinput = this.getElement.querySelector('#event-start-time-1');
     const saveBtn = this.getElement.querySelector('.event__save-btn');
-
+    // console.log(this._data);
     if (dayjs([userDate]).isAfter(this._data.timeEnd)) {
-      dateStartinput.setCustomValidity('Invalid value'); //не показывает валидацию
+      dateStartinput.setCustomValidity('Invalid value'); //не показывает сообщение
       dateStartinput.reportValidity();
       saveBtn.disabled = true;
     } else {
@@ -303,18 +275,14 @@ export default class CreateEditPoint extends SmartView {
       saveBtn.disabled = false;
 
       this.updateData({
-        date: dayjs(userDate),
         timeStart: dayjs(userDate),
-        timeDuration: dayjs(userDate).diff(this._data.timeEnd),
       }, true);
     }
   }
 
   #onTimeEndChange = ([userDate]) => {
     this.updateData({
-      date: dayjs(userDate),
       timeEnd: dayjs(userDate),
-      timeDuration: dayjs(userDate).diff(this._data.timeStart),
     }, true);
   }
 

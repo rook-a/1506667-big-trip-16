@@ -2,16 +2,15 @@ import CreateTripInfo from './view/trip-info-view.js';
 import CreateSiteMenu from './view/menu-view.js';
 import {RenderPosition, render} from './utils/render.js';
 import PointsModel from './model/points-model.js';
-import {generatePoint} from './mock/point.js';
 import {DEFAULT_VALUE} from './utils/const.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import CreateAddButton from './view/add-button-view.js';
+import ApiService from './services/api-service.js';
 
-const POINTS_COUNT = 20;
-
-const points = Array.from({length: POINTS_COUNT}, generatePoint);
+const AUTHORIZATION = 'Basic r3hweu7dc025qjz';
+const END_POINT = 'https://16.ecmascript.pages.academy/big-trip/';
 
 const tripInfoContainer = document.querySelector('.trip-main');
 const siteMenuContainer = tripInfoContainer.querySelector('.trip-controls__navigation');
@@ -19,8 +18,7 @@ const tripFiltersContainer = tripInfoContainer.querySelector('.trip-controls__fi
 
 const tripEventsContainer = document.querySelector('.trip-events');
 
-const pointsModel = new PointsModel();
-pointsModel.points = points;
+const pointsModel = new PointsModel(new ApiService(END_POINT, AUTHORIZATION));
 
 const filterModel = new FilterModel();
 
@@ -32,8 +30,10 @@ addButton.setOnClickAddButton(tripPresenter.createPoint);
 
 render(tripInfoContainer, addButton, RenderPosition.BEFOREEND);
 
-render(tripInfoContainer, new CreateTripInfo(), RenderPosition.AFTERBEGIN);
-render(siteMenuContainer, new CreateSiteMenu(DEFAULT_VALUE.menu), RenderPosition.BEFOREEND);
-
-filterPresenter.init();
 tripPresenter.init();
+
+pointsModel.init().finally(() => {
+  render(tripInfoContainer, new CreateTripInfo(), RenderPosition.AFTERBEGIN);
+  render(siteMenuContainer, new CreateSiteMenu(DEFAULT_VALUE.menu), RenderPosition.BEFOREEND);
+  filterPresenter.init();
+});
