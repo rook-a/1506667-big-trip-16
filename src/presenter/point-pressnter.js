@@ -102,7 +102,7 @@ export default class PointPresenter {
   }
 
   #onClickToSave = (update) => {
-    const isMinorUpdate = !isDatesEqual(this.#point.timeStart, update.timeStart);
+    const isMinorUpdate = !isDatesEqual(this.#point.timeDuration, update.timeDuration);
 
     this.#changeDate(
       UserAction.UPDATE_POINT,
