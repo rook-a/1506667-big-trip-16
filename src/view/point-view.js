@@ -1,4 +1,5 @@
 import AbstractView from './abstract-view.js';
+import {createHumanizeTimeDuration} from '../utils/utils.js';
 
 const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
   ${offers.map(({title, price}) => `<li class="event__offer">
@@ -9,7 +10,7 @@ const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
 </ul>`;
 
 const createPointTemplate = (point) => {
-  const {type, price, destination, offer, timeStart, timeEnd, createHumanizeTimeDuration} = point;
+  const {type, price, destination, offer, timeStart, timeEnd} = point;
 
   const favoriteClassName = point.isFavorite ? 'event__favorite-btn--active' : '';
   const offerTemplate = offer ? createOfferTemplate(offer) : '';
@@ -72,7 +73,6 @@ export default class CreatePoint extends AbstractView {
   #pointClick = (evt) => {
     evt.preventDefault();
     this._callback.pointClick();
-    // console.log(this.#point); //тут смотрел начальное состояние точки
   }
 
   #favoriteClick = (evt) => {

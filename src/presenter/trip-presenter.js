@@ -3,11 +3,12 @@ import ListPoinView from '../view/list-point-view.js';
 import PointPresenter from './point-pressnter.js';
 import PointNewPresenter from './point-new-presenter.js';
 import CreateNoPointMessage from '../view/no-point-message-view.js';
+import LoadingView from '../view/loading-view.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {filters} from '../utils/filter.js';
 import {DEFAULT_VALUE, UpdateType, UserAction, FilterType, SortType} from '../utils/const.js';
 import {sortByPrice, sortByDays, sortByTime} from '../utils/utils.js';
-import {defaultPoint} from '../mock/point.js';
+import {defaultPoint} from '../utils/utils.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -17,9 +18,11 @@ export default class TripPresenter {
   #filterModel = null;
   #noPointMessageComponent = null;
   #pointNewPresenter = null;
+  #loadingComponent = new LoadingView();
   #pointPresenter = new Map();
   #currentFilterType = FilterType.EVERYTHING;
   #currentSortType = DEFAULT_VALUE.sorting;
+  #isLoading = true;
 
   #listPointComponent = new ListPoinView();
 
@@ -59,7 +62,7 @@ export default class TripPresenter {
   createPoint = () => {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#pointNewPresenter.init(defaultPoint);
+    this.#pointNewPresenter.init(defaultPoint, this.#pointsModel.offers, this.#pointsModel.destination);
   }
 
   #onModeChange = () => {
@@ -84,7 +87,7 @@ export default class TripPresenter {
   #onModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenter.get(data.id).init(data);
+        this.#pointPresenter.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destination);
         break;
       case UpdateType.MINOR:
         this.#clearEvents(true);
@@ -92,6 +95,11 @@ export default class TripPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearEvents(true);
+        this.#renderEvents();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderEvents();
         break;
     }
@@ -117,7 +125,7 @@ export default class TripPresenter {
 
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#listPointComponent, this.#onViewAction, this.#onModeChange);
-    pointPresenter.init(point);
+    pointPresenter.init(point, this.#pointsModel.offers, this.#pointsModel.destination);
     this.#pointPresenter.set(point.id, pointPresenter);
   }
 
@@ -125,6 +133,10 @@ export default class TripPresenter {
     for (let i = 0; i < this.points.length; i++) {
       this.#renderPoint(this.points[i]);
     }
+  }
+
+  #renderLoading = () => {
+    render(this.#tripEventsContainer, this.#loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   #renderNoPointMessage = () => {
@@ -143,6 +155,7 @@ export default class TripPresenter {
 
     remove(this.#sortComponent);
     remove(this.#listPointComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointMessageComponent) {
       remove(this.#noPointMessageComponent);
@@ -155,6 +168,11 @@ export default class TripPresenter {
 
   #renderEvents = () => {
     const pointsCount = this.points.length;
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
 
     if (pointsCount === 0) {
       this.#renderNoPointMessage();

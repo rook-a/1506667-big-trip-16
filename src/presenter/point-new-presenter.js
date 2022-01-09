@@ -13,12 +13,12 @@ export default class PointNewPresenter {
     this.#changeDate = changeData;
   }
 
-  init(point) {
+  init(point, OFFERS, DESTINATION) {
     if (this.#editPointComponent !== null) {
       return;
     }
 
-    this.#editPointComponent = new CreateEditPoint(point);
+    this.#editPointComponent = new CreateEditPoint(point, OFFERS, DESTINATION);
     this.#editPointComponent.setOnFormSubmit(this.#onClickToSave);
     this.#editPointComponent.setOnEditPointClick(this.#onClickToDelete);
     this.#editPointComponent.setOnDeleteClick(this.#onClickToDelete);
