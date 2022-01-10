@@ -1,7 +1,7 @@
 import CreateEditPoint from '../view/edit-point-view.js';
 import CreatePoint from '../view/point-view.js';
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
-import {Mode, UserAction, UpdateType} from '../utils/const.js';
+import {Mode, UserAction, UpdateType, State} from '../utils/const.js';
 import {isDatesEqual} from '../utils/utils.js';
 
 export default class PointPresenter {
@@ -46,7 +46,8 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#editPointComponent, prevEditPointComponent);
+      replace(this.#pointComponent, prevEditPointComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -62,6 +63,39 @@ export default class PointPresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#editPointComponent.reset(this.#point);
       this.#replaceFormToPoint();
+    }
+  }
+
+  setViewState = (state) => {
+    if (this.#mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editPointComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this.#editPointComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this.#editPointComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this.#pointComponent.shake(resetFormState);
+        this.#editPointComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -109,7 +143,8 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update
     );
-    this.#replaceFormToPoint();
+    // console.log('true = minor/false = patch', isMinorUpdate);
+    // console.log(update);
   }
 
   #onClickToClose = () => {

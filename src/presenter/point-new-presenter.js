@@ -1,7 +1,6 @@
 import CreateEditPoint from '../view/edit-point-view.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {UserAction, UpdateType} from '../utils/const.js';
-import {nanoid} from 'nanoid';
 
 export default class PointNewPresenter {
   #listPointContainer = null;
@@ -41,13 +40,31 @@ export default class PointNewPresenter {
     document.removeEventListener('keydown', this.#onEscKeyDown);
   }
 
+  setSaving = () => {
+    this.#editPointComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#editPointComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editPointComponent.shake(resetFormState);
+  }
+
   #onClickToSave = (point) => {
     this.#changeDate(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      {id: nanoid(), ...point}
+      point,
     );
-    this.destroy();
   }
 
   #onClickToDelete = () => {
