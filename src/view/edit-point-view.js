@@ -17,13 +17,13 @@ const createOfferCheckboxTemplate = ({offers}, pointOffer, isDisabled) => offers
     ${offers.map(({id, title, price}) => `<li class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden"
-        id="${title}-${id}"
+        id="${id}"
         type="checkbox"
         name="${title}"
-        ${pointOffer.map((choiceOffer) => id === choiceOffer.id ? 'checked' : '').join('')}
+        ${pointOffer.map((offer) => id === offer.id ? 'checked' : '').join('')}
         ${isDisabled ? 'disabled' : ''}
       >
-      <label class="event__offer-label" for="${title}-${id}">
+      <label class="event__offer-label" for="${id}">
           <span class="event__offer-title">${title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${price}</span>
@@ -170,6 +170,11 @@ export default class CreateEditPoint extends SmartView {
 
   #formSubmit = (evt) => {
     evt.preventDefault();
+
+    this.updateData({
+      offer: this.#onOffersChange(),
+    }, true);
+
     this._callback.formSubmit(CreateEditPoint.parseDataToPoint(this._data));
   }
 
@@ -223,26 +228,33 @@ export default class CreateEditPoint extends SmartView {
     });
   }
 
-  // #onOffersChange = (evt) => {
-  //   evt.preventDefault();
+  #onOffersChange = () => {
+    const checkboxOffers = Array.from(this.getElement.querySelectorAll('.event__offer-checkbox'));
+    const currentPointType = this.#OFFERS.find((offer) => offer.type === this._data.type);
+    const checkedOffers = [];
+    const offers = [];
 
+    checkboxOffers.map((offer) => {
+      const id = Number(offer.id);
 
-  //   // this.#OFFERS.map((offerItem) => {
-  //   //   const {offers} = offerItem;
-  //   //   const choisenCheckbox = offers.filter((choiceOffer) => choiceOffer.checked === true);
-  //   //   console.log(offers.filter((choiceOffer) => choiceOffer.checked === true));
-  //   //   // this.updateData({
-  //   //   //   offer: choisenCheckbox,
-  //   //   // });
-  //   // });
-  // }
+      if (offer.checked) {
+        checkedOffers.push(id);
+      }
+    });
 
+    currentPointType.offers.map((offer) => {
+      if (checkedOffers.includes(offer.id)) {
+        offers.push(offer);
+      }
+    });
+
+    return offers;
+  }
 
   #setInnerHandlers = () => {
     this.getElement.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
     this.getElement.querySelector('.event__field-group--destination').addEventListener('change', this.#onCityChange);
     this.getElement.querySelector('.event__input--price').addEventListener('input', this.#onPriceInput);
-    // this.getElement.querySelector('.event__available-offers').addEventListener('change', this.#onOffersChange);
   }
 
   restoreHandlers = () => {
