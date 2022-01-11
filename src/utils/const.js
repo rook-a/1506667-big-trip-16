@@ -53,3 +53,9 @@ export const Method = {
   PUT: 'PUT',
   DELETE: 'DELETE',
 };
+
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};

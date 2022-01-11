@@ -10,7 +10,7 @@ import CreateAddButton from './view/add-button-view.js';
 import ApiService from './services/api-service.js';
 
 const AUTHORIZATION = 'Basic r3hweu7dc025qjz';
-const END_POINT = 'https://16.ecmascript.pages.academy/big-trip/';
+const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
 const tripInfoContainer = document.querySelector('.trip-main');
 const siteMenuContainer = tripInfoContainer.querySelector('.trip-controls__navigation');

@@ -15,14 +15,14 @@ export const sortByDays = (pointFirst, pointSecond) => {
 };
 
 export const sortByTime = (pointFirst, pointSecond) => {
-  const first = pointFirst.timeStart.diff(pointFirst.timeEnd);
-  const second = pointSecond.timeStart.diff(pointSecond.timeEnd);
+  const firstPointDiff  = pointFirst.timeStart.diff(pointFirst.timeEnd);
+  const secondPointDiff = pointSecond.timeStart.diff(pointSecond.timeEnd);
 
-  if (second < first) {
+  if (secondPointDiff < firstPointDiff) {
     return 1;
   }
 
-  if (second > first) {
+  if (secondPointDiff > firstPointDiff) {
     return -1;
   }
 

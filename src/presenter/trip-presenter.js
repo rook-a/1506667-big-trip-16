@@ -6,9 +6,8 @@ import CreateNoPointMessage from '../view/no-point-message-view.js';
 import LoadingView from '../view/loading-view.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {filters} from '../utils/filter.js';
-import {DEFAULT_VALUE, UpdateType, UserAction, FilterType, SortType} from '../utils/const.js';
-import {sortByPrice, sortByDays, sortByTime} from '../utils/utils.js';
-import {defaultPoint} from '../utils/utils.js';
+import {DEFAULT_VALUE, UpdateType, UserAction, FilterType, SortType, State} from '../utils/const.js';
+import {sortByPrice, sortByDays, sortByTime, defaultPoint} from '../utils/utils.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -70,16 +69,34 @@ export default class TripPresenter {
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  #onViewAction = (actionType, updateType, update) => {
+  #onViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.updatePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setViewState(State.SAVING);
+
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch(err) {
+          this.#pointPresenter.get(update.id).setViewState(State.ABORTING);
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#pointsModel.addPoint(updateType, update);
+        this.#pointNewPresenter.setSaving();
+
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+        } catch(err) {
+          this.#pointNewPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointsModel.deletePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setViewState(State.DELETING);
+
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+        } catch(err) {
+          this.#pointPresenter.get(update.id).setViewState(State.ABORTING);
+        }
         break;
     }
   }
