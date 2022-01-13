@@ -191,7 +191,7 @@ export default class CreateEditPoint extends SmartView {
     delete data.isDeleting;
 
     return {...data};
-  } ///////////////////////////
+  }
 
   #onTypeChange = (evt) => {
     evt.preventDefault();
@@ -216,8 +216,8 @@ export default class CreateEditPoint extends SmartView {
         this.updateData({
           destination: {
             name: evt.target.value,
-            description: description,
-            pictures: pictures,
+            description,
+            pictures,
           }
         });
       } else {

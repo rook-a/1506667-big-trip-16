@@ -59,7 +59,6 @@ export default class TripPresenter {
   }
 
   createPoint = () => {
-    this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#pointNewPresenter.init(defaultPoint, this.#pointsModel.offers, this.#pointsModel.destination);
   }
@@ -185,6 +184,7 @@ export default class TripPresenter {
 
   #renderEvents = () => {
     const pointsCount = this.points.length;
+    const formSort = this.#tripEventsContainer.querySelector('.trip-sort');
 
     if (this.#isLoading) {
       this.#renderLoading();
@@ -196,8 +196,17 @@ export default class TripPresenter {
       return;
     }
 
+    //проверка на наличие формы сортировки на странице чтобы исключить неоднократное добавление при повторных кликах на TABLE
+    if (formSort) {
+      return;
+    }
+
     this.#renderSort();
     this.#renderListPoints();
     this.#renderPoints();
+  }
+
+  destroy = () => {
+    this.#clearEvents();
   }
 }

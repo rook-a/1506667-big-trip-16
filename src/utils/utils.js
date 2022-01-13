@@ -40,16 +40,25 @@ export const createHumanizeTimeDuration = (timeStart, timeEnd) => {
 export const isDatesEqual = (dateFirst, dateSecond) => (dateFirst === null && dateSecond === null) || dayjs(dateFirst).isSame(dateSecond);
 
 export const defaultPoint = {
-  id: '',
+  id: '0',
   type: 'taxi',
   destination: {
     name: 'Amsterdam',
-    description: 'Bla bla bla',
-    pictures: [],
+    description: 'Amsterdam, a true asian pearl, in a middle of Europe.',
+    pictures: [{
+      src: 'http://picsum.photos/300/200?r=0.5201990596034274',
+      description: 'Amsterdam zoo',
+    }],
   },
   timeStart: dayjs().add(1, 'd'),
   timeEnd: dayjs().add(3, 'd'),
   price: 5,
-  offer: [],
+  offer: [
+    {id: 1, title: 'Upgrade to a business class', price: 190},
+    {id: 2, title: 'Choose the radio station', price: 30},
+    {id: 3, title: 'Choose temperature', price: 170},
+    {id: 4, title: 'Drive quickly, I\'m in a hurry', price: 100},
+    {id: 5, title: 'Drive slowly', price: 110},
+  ],
   isFavorite: false,
 };
