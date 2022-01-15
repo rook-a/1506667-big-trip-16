@@ -7,7 +7,8 @@ import LoadingView from '../view/loading-view.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {filters} from '../utils/filter.js';
 import {DEFAULT_VALUE, UpdateType, UserAction, FilterType, SortType, State} from '../utils/const.js';
-import {sortByPrice, sortByDays, sortByTime, defaultPoint} from '../utils/utils.js';
+import {sortByPrice, sortByDays, sortByTime} from '../utils/utils.js';
+import {defaultPoint} from '../mock/new-point.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -192,6 +193,7 @@ export default class TripPresenter {
     }
 
     if (pointsCount === 0) {
+      this.#renderListPoints();
       this.#renderNoPointMessage();
       return;
     }
