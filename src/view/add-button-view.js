@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {siteMenuComponent} from '../main.js';
+import {siteMenuComponent, statisticsPresenter} from '../main.js';
 import {DEFAULT_VALUE} from '../utils/const.js';
 
 const createAddButtonTemplate = () => (
@@ -19,6 +19,7 @@ export default class CreateAddButton extends AbstractView {
   #onClickAddButton = (evt) => {
     evt.preventDefault();
     siteMenuComponent.setMenuTab(DEFAULT_VALUE.menu);
+    statisticsPresenter.destroy();
     this._callback.clickAddButton();
   }
 }
