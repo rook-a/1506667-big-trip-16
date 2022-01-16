@@ -1,4 +1,3 @@
-import CreateTripInfo from './view/trip-info-view.js';
 import CreateSiteMenu from './view/menu-view.js';
 import {RenderPosition, render} from './utils/render.js';
 import PointsModel from './model/points-model.js';
@@ -9,6 +8,7 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import CreateAddButton from './view/add-button-view.js';
 import ApiService from './services/api-service.js';
 import StatisticsPresenter from './presenter/statistics-presenter.js';
+import TripInfoPresenter from './presenter/trip-info-presenter.js';
 
 const AUTHORIZATION = 'Basic r3hweu7dc025qjz';
 const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
@@ -24,11 +24,10 @@ const tripEventsContainer = document.querySelector('.trip-events');
 const pointsModel = new PointsModel(new ApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 
-
+const tripInfoPresenter = new TripInfoPresenter(tripInfoContainer, pointsModel);
 const statisticsPresenter = new StatisticsPresenter(tripEventsContainer, pointsModel);
-
 const tripPresenter = new TripPresenter(tripEventsContainer, tripFiltersContainer, pointsModel, filterModel);
-const filterPresenter = new FilterPresenter(tripFiltersContainer, filterModel);
+const filterPresenter = new FilterPresenter(tripFiltersContainer, filterModel, pointsModel);
 
 const addButton = new CreateAddButton();
 addButton.setOnClickAddButton(() => {
@@ -61,7 +60,7 @@ siteMenuComponent.setOnMenuClick(onSiteMenuClick);
 tripPresenter.init();
 
 pointsModel.init().finally(() => {
-  render(tripInfoContainer, new CreateTripInfo(), RenderPosition.AFTERBEGIN);
+  tripInfoPresenter.init();
   render(siteMenuContainer, siteMenuComponent, RenderPosition.BEFOREEND);
   filterPresenter.init();
 });

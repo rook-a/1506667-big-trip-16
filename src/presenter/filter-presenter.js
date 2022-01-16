@@ -5,13 +5,15 @@ import {RenderPosition, render, remove, replace} from '../utils/render.js';
 export default class FilterPresenter {
   #filterContainer = null;
   #filterModel = null;
-
+  #pointsModel = null;
   #filterComponent = null;
 
-  constructor(filterContainer, filterModel) {
+  constructor(filterContainer, filterModel, pointsModel) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
+    this.#pointsModel = pointsModel;
 
+    this.#pointsModel.addObserver(this.#onModelEvent);
     this.#filterModel.addObserver(this.#onModelEvent);
   }
 
@@ -22,7 +24,7 @@ export default class FilterPresenter {
   init() {
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new CreateFilters(this.#filterModel.filter);
+    this.#filterComponent = new CreateFilters(this.#filterModel.filter, this.#pointsModel.getFilteredPointsCount());
     this.#filterComponent.setOnFilterTypeChange(this.onFilterTypeChange);
 
     if (prevFilterComponent === null) {
