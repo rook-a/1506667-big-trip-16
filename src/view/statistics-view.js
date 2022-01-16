@@ -19,13 +19,6 @@ const createStatisticsTemplate = () => (
 );
 
 export default class StatisticsView extends SmartView {
-  // #points = null;
-
-  // constructor(points) {
-  //   super();
-  //   this.#points = points;
-  // }
-
   get getTemplate() {
     return createStatisticsTemplate();
   }

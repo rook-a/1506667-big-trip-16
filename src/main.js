@@ -17,22 +17,25 @@ const tripInfoContainer = document.querySelector('.trip-main');
 const siteMenuContainer = tripInfoContainer.querySelector('.trip-controls__navigation');
 const tripFiltersContainer = tripInfoContainer.querySelector('.trip-controls__filters');
 
-//1/2 не уверен, что экспорт в этом случае ок
-export const siteMenuComponent = new CreateSiteMenu(DEFAULT_VALUE.menu);
+const siteMenuComponent = new CreateSiteMenu(DEFAULT_VALUE.menu);
 
 const tripEventsContainer = document.querySelector('.trip-events');
 
 const pointsModel = new PointsModel(new ApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 
-//2/2 и в этом
-export const statisticsPresenter = new StatisticsPresenter(tripEventsContainer, pointsModel);
+
+const statisticsPresenter = new StatisticsPresenter(tripEventsContainer, pointsModel);
 
 const tripPresenter = new TripPresenter(tripEventsContainer, tripFiltersContainer, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripFiltersContainer, filterModel);
 
 const addButton = new CreateAddButton();
-addButton.setOnClickAddButton(tripPresenter.createPoint);
+addButton.setOnClickAddButton(() => {
+  tripPresenter.createPoint();
+  siteMenuComponent.setMenuTab(DEFAULT_VALUE.menu);
+  statisticsPresenter.destroy();
+});
 
 render(tripInfoContainer, addButton, RenderPosition.BEFOREEND);
 
@@ -44,6 +47,8 @@ const onSiteMenuClick = (menuTabs) => {
       filterPresenter.init();
       break;
     case MENU_TABS.STATS:
+      tripPresenter.onSortChange(DEFAULT_VALUE.sorting);
+      filterPresenter.onFilterTypeChange(DEFAULT_VALUE.filter);
       tripPresenter.destroy();
       filterPresenter.destroy();
       statisticsPresenter.init();

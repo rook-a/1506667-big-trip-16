@@ -31,7 +31,7 @@ export default class PointsModel extends AbstractObserver {
       this.#points = points.map(this.#adaptToClient);
       this.#destination = await this.#apiService.destination;
       this.#offers = await this.#apiService.offers;
-      // console.log(this.#points.length);
+      // console.log(this.#points);
     } catch(err) {
       this.#points = [];
     }

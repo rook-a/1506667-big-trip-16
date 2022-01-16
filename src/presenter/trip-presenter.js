@@ -122,7 +122,7 @@ export default class TripPresenter {
     }
   }
 
-  #onSortChange = (sortType) => {
+  onSortChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
@@ -135,7 +135,7 @@ export default class TripPresenter {
 
   #renderSort = () => {
     this.#sortComponent = new CreateSort(this.#currentSortType);
-    this.#sortComponent.setOnSortChange(this.#onSortChange);
+    this.#sortComponent.setOnSortChange(this.onSortChange);
 
     render(this.#tripEventsContainer, this.#sortComponent, RenderPosition.BEFOREEND);
   }
@@ -198,7 +198,7 @@ export default class TripPresenter {
       return;
     }
 
-    //проверка на наличия формы сортировки на странице чтобы исключить неоднократное добавление при повторных кликах на TABLE
+    //проверка наличия формы сортировки на странице чтобы исключить неоднократное добавление при повторных кликах на TABLE
     if (formSort) {
       return;
     }

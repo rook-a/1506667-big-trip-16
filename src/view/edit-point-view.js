@@ -66,7 +66,7 @@ const createEditPointTemplate = (point, OFFERS, DESTINATION) => {
     isSaving,
     isDeleting,
   } = point;
-  // console.log('point', point);
+  // console.log('destination', destination);
   const filterDescription = DESTINATION.length > 0 ? DESTINATION.find(({name}) => destination.name === name) : MOCK_DESTINATIONS.find(({name}) => name === name);
   const filterPoint = OFFERS.length > 0 ? OFFERS.find((item) => item.type === type) : MOCK_OFFERS.find((item) => item.type === type);
   // console.log('filterDescription', filterDescription);

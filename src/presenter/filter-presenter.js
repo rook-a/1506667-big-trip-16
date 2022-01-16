@@ -23,7 +23,7 @@ export default class FilterPresenter {
     const prevFilterComponent = this.#filterComponent;
 
     this.#filterComponent = new CreateFilters(this.#filterModel.filter);
-    this.#filterComponent.setOnFilterTypeChange(this.#onFilterTypeChange);
+    this.#filterComponent.setOnFilterTypeChange(this.onFilterTypeChange);
 
     if (prevFilterComponent === null) {
       render(this.#filterContainer, this.#filterComponent, RenderPosition.BEFOREEND);
@@ -38,7 +38,7 @@ export default class FilterPresenter {
     this.init();
   }
 
-  #onFilterTypeChange = (filterType) => {
+  onFilterTypeChange = (filterType) => {
     if (this.#filterModel.filter === filterType) {
       return;
     }

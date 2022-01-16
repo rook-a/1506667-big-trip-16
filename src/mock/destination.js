@@ -40,17 +40,7 @@ export const MOCK_DESTINATIONS = [
     ],
   },
   {
-    name: 'Porto',
-    description: 'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-    pictures: [
-      {
-        src: '',
-        description: '',
-      }
-    ],
-  },
-  {
-    name: 'Barselona',
+    name: 'Barcelona',
     description: 'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
     pictures: [
       {
@@ -80,28 +70,8 @@ export const MOCK_DESTINATIONS = [
     ],
   },
   {
-    name: 'Bratislava',
-    description: 'Nunc fermentum tortor ac porta dapibus.',
-    pictures: [
-      {
-        src: '',
-        description: '',
-      }
-    ],
-  },
-  {
     name: 'Milan',
     description: 'In rutrum ac purus sit amet tempus.',
-    pictures: [
-      {
-        src: '',
-        description: '',
-      }
-    ],
-  },
-  {
-    name: 'Ibiza',
-    description: 'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
     pictures: [
       {
         src: '',
