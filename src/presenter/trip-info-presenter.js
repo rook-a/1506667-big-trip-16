@@ -24,6 +24,7 @@ export default class TripInfoPresenter {
 
     if (!points.length && prevTripInfoComponent !== null) {
       remove(prevTripInfoComponent);
+      this.#tripInfoComponent = null;
       return;
     }
 
@@ -36,11 +37,11 @@ export default class TripInfoPresenter {
     remove(prevTripInfoComponent);
   }
 
-  #onModelEvent = () => {
-    this.init();
-  }
-
   #renderTripInfo = () => {
     render(this.#tripInfoContainer, this.#tripInfoComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  #onModelEvent = () => {
+    this.init();
   }
 }

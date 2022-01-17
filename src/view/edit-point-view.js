@@ -15,7 +15,7 @@ const createPictureTemplate = (pictures) => `<div class="event__photos-container
 
 const createDescriptionTemplate = ({description}) => description ? `<p class="event__destination-description">${description}</p>` : '';
 
-const createOfferCheckboxTemplate = ({offers}, pointOffer, isDisabled) => offers ? `<ul class="event__available-offers">
+const createOffersCheckboxTemplate = ({offers}, pointOffer, isDisabled) => offers ? `<ul class="event__available-offers">
     ${offers.map(({id, title, price}) => `<li class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden"
@@ -33,9 +33,9 @@ const createOfferCheckboxTemplate = ({offers}, pointOffer, isDisabled) => offers
     </li>`).join('')}
   </ul>` : '';
 
-const createOfferTemplate = (point, offer, isDisabled) => point.offers.length > 0 ? `<section class="event__section  event__section--offers">
+const createOffersTemplate = (point, offers, isDisabled) => point.offers.length > 0 ? `<section class="event__section  event__section--offers">
   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-    ${createOfferCheckboxTemplate(point, offer, isDisabled)}
+    ${createOffersCheckboxTemplate(point, offers, isDisabled)}
   </section>` : '';
 
 const createDropdownCityTemplate = (citys) => `${citys.map(({name}) => `<option value="${name}"></option>`).join('')}`;
@@ -53,27 +53,24 @@ const createTypeTemplate = (types, isDisabled) => `<div class="event__type-list"
   </div>`;
 
 const createEditPointTemplate = (point, OFFERS, DESTINATION) => {
-  // console.log('OFFERS', OFFERS);
-  // console.log('DESTINATION', DESTINATION);
   const {
     type,
     price,
     destination,
     timeStart,
     timeEnd,
-    offer,
+    offers,
     isDisabled,
     isSaving,
     isDeleting,
   } = point;
-  // console.log('destination', destination);
+
   const filterDescription = DESTINATION.length > 0 ? DESTINATION.find(({name}) => destination.name === name) : MOCK_DESTINATIONS.find(({name}) => name === name);
   const filterPoint = OFFERS.length > 0 ? OFFERS.find((item) => item.type === type) : MOCK_OFFERS.find((item) => item.type === type);
-  // console.log('filterDescription', filterDescription);
   const cityChoiceTemplate = DESTINATION.length > 0 ? createDropdownCityTemplate(DESTINATION) : createDropdownCityTemplate(MOCK_DESTINATIONS);
   const picturesTemplate = destination.pictures ? createPictureTemplate(destination.pictures) : '';
   const descriptionTemplate = createDescriptionTemplate(filterDescription);
-  const offerTemplate = offer ? createOfferTemplate(filterPoint, offer, isDisabled) : createOfferTemplate(filterPoint, filterPoint.offers, isDisabled);
+  const offersTemplate = offers ? createOffersTemplate(filterPoint, offers, isDisabled) : createOffersTemplate(filterPoint, filterPoint.offers, isDisabled);
   const typeTemplate = OFFERS.length > 0 ? createTypeTemplate(OFFERS, isDisabled) : createTypeTemplate(MOCK_OFFERS, isDisabled);
 
   return `<li class="trip-events__item">
@@ -122,7 +119,7 @@ const createEditPointTemplate = (point, OFFERS, DESTINATION) => {
               </header>
               <section class="event__details">
 
-                ${offerTemplate}
+                ${offersTemplate}
 
                 <section class="event__section  event__section--destination">
                   <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -155,6 +152,66 @@ export default class CreateEditPoint extends SmartView {
     return createEditPointTemplate(this._data, this.#OFFERS, this.#DESTINATION);
   }
 
+  #setInnerHandlers = () => {
+    this.getElement.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
+    this.getElement.querySelector('.event__field-group--destination').addEventListener('change', this.#onCityChange);
+    this.getElement.querySelector('.event__input--price').addEventListener('input', this.#onPriceInput);
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setOnEditPointClick(this._callback.pointClick);
+    this.setOnFormSubmit(this._callback.formSubmit);
+    this.setOnDeleteClick(this._callback.deleteClick);
+    this.setDatepickerTimeStart();
+    this.setDatepickerTimeEnd();
+  }
+
+  reset = (point) => {
+    this.updateData(
+      CreateEditPoint.parsePointToData(point),
+    );
+  }
+
+  setDatepickerTimeStart = () => {
+    this.#datepickerTimeStart = flatpickr(
+      this.getElement.querySelector('#event-start-time-1'),
+      Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
+        defaultDate: this._data.timeStart.toString(),
+        defaultHour: this._data.timeStart.format('HH'),
+        defaultMinute: this._data.timeStart.format('mm'),
+        onClose: this.#onTimeStartChange,
+      })
+    );
+  }
+
+  setDatepickerTimeEnd = () => {
+    this.#datepickerTimeEnd = flatpickr(
+      this.getElement.querySelector('#event-end-time-1'),
+      Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
+        minDate: this._data.timeStart.toString(),
+        defaultDate: this._data.timeEnd.toString(),
+        defaultHour: this._data.timeEnd.format('HH'),
+        defaultMinute: this._data.timeEnd.format('mm'),
+        onClose: this.#onTimeEndChange,
+      })
+    );
+  }
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepickerTimeStart) {
+      this.#datepickerTimeStart.destroy();
+      this.#datepickerTimeStart = null;
+    }
+
+    if (this.#datepickerTimeEnd) {
+      this.#datepickerTimeEnd.destroy();
+      this.#datepickerTimeEnd = null;
+    }
+  }
+
   setOnEditPointClick = (callback) => {
     this._callback.pointClick = callback;
     this.getElement.querySelector('.event__rollup-btn').addEventListener('click', this.#pointClick);
@@ -174,32 +231,17 @@ export default class CreateEditPoint extends SmartView {
     evt.preventDefault();
 
     this.updateData({
-      offer: this.#onOffersChange(),
+      offers: this.#onOffersChange(),
     }, true);
 
     this._callback.formSubmit(CreateEditPoint.parseDataToPoint(this._data));
-  }
-
-  static parsePointToData = (point) => ({
-    ...point,
-    isSaving: false,
-    isDisabled: false,
-    isDeleting: false,
-  })
-
-  static parseDataToPoint = (data) => {
-    delete data.isSaving;
-    delete data.isDisabled;
-    delete data.isDeleting;
-
-    return {...data};
   }
 
   #onTypeChange = (evt) => {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
-      offer: this.#OFFERS.length > 0 ? this.#OFFERS.find(({type}) => evt.target.value === type).offers : MOCK_OFFERS.find(({type}) => evt.target.value === type).offers,
+      offers: this.#OFFERS.length > 0 ? this.#OFFERS.find(({type}) => evt.target.value === type).offers : MOCK_OFFERS.find(({type}) => evt.target.value === type).offers,
     });
   }
 
@@ -255,21 +297,6 @@ export default class CreateEditPoint extends SmartView {
     return offers;
   }
 
-  #setInnerHandlers = () => {
-    this.getElement.querySelector('.event__type-group').addEventListener('change', this.#onTypeChange);
-    this.getElement.querySelector('.event__field-group--destination').addEventListener('change', this.#onCityChange);
-    this.getElement.querySelector('.event__input--price').addEventListener('input', this.#onPriceInput);
-  }
-
-  restoreHandlers = () => {
-    this.#setInnerHandlers();
-    this.setOnEditPointClick(this._callback.pointClick);
-    this.setOnFormSubmit(this._callback.formSubmit);
-    this.setOnDeleteClick(this._callback.deleteClick);
-    this.setDatepickerTimeStart();
-    this.setDatepickerTimeEnd();
-  }
-
   #onPriceInput = (evt) => {
     evt.preventDefault();
     const priceValue = Number(evt.target.value) > 0 ? evt.target.value : '';
@@ -286,47 +313,16 @@ export default class CreateEditPoint extends SmartView {
       saveBtn.disabled = false;
       this.updateData({
         price: Number(evt.target.value),
-      });
+      }, true);
     }
-  }
-
-  reset = (point) => {
-    this.updateData(
-      CreateEditPoint.parsePointToData(point),
-    );
-  }
-
-  setDatepickerTimeStart = () => {
-    this.#datepickerTimeStart = flatpickr(
-      this.getElement.querySelector('#event-start-time-1'),
-      Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
-        defaultDate: this._data.timeStart.toString(),
-        defaultHour: this._data.timeStart.format('HH'),
-        defaultMinute: this._data.timeStart.format('mm'),
-        onClose: this.#onTimeStartChange,
-      })
-    );
-  }
-
-  setDatepickerTimeEnd = () => {
-    this.#datepickerTimeEnd = flatpickr(
-      this.getElement.querySelector('#event-end-time-1'),
-      Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
-        minDate: this._data.timeStart.toString(),
-        defaultDate: this._data.timeEnd.toString(),
-        defaultHour: this._data.timeEnd.format('HH'),
-        defaultMinute: this._data.timeEnd.format('mm'),
-        onClose: this.#onTimeEndChange,
-      })
-    );
   }
 
   #onTimeStartChange = ([userDate]) => {
     const dateStartinput = this.getElement.querySelector('#event-start-time-1');
     const saveBtn = this.getElement.querySelector('.event__save-btn');
-    // console.log(this._data);
+
     if (dayjs([userDate]).isAfter(this._data.timeEnd)) {
-      dateStartinput.setCustomValidity('Invalid value'); //не показывает сообщение
+      dateStartinput.setCustomValidity('Invalid value');
       dateStartinput.reportValidity();
       saveBtn.disabled = true;
     } else {
@@ -356,17 +352,18 @@ export default class CreateEditPoint extends SmartView {
     this._callback.deleteClick(CreateEditPoint.parseDataToPoint(this._data));
   }
 
-  removeElement = () => {
-    super.removeElement();
+  static parsePointToData = (point) => ({
+    ...point,
+    isSaving: false,
+    isDisabled: false,
+    isDeleting: false,
+  })
 
-    if (this.#datepickerTimeStart) {
-      this.#datepickerTimeStart.destroy();
-      this.#datepickerTimeStart = null;
-    }
+  static parseDataToPoint = (data) => {
+    delete data.isSaving;
+    delete data.isDisabled;
+    delete data.isDeleting;
 
-    if (this.#datepickerTimeEnd) {
-      this.#datepickerTimeEnd.destroy();
-      this.#datepickerTimeEnd = null;
-    }
+    return {...data};
   }
 }

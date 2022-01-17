@@ -1,7 +1,7 @@
 import AbstractView from './abstract-view.js';
 import {createHumanizeTimeDuration} from '../utils/utils.js';
 
-const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
+const createOffersTemplate = (offers) => `<ul class="event__selected-offers">
   ${offers.map(({title, price}) => `<li class="event__offer">
     <span class="event__offer-title">${title}</span>
     &plus;&euro;&nbsp;
@@ -10,10 +10,10 @@ const createOfferTemplate = (offers) => `<ul class="event__selected-offers">
 </ul>`;
 
 const createPointTemplate = (point) => {
-  const {type, price, destination, offer, timeStart, timeEnd} = point;
+  const {type, price, destination, offers, timeStart, timeEnd} = point;
 
   const favoriteClassName = point.isFavorite ? 'event__favorite-btn--active' : '';
-  const offerTemplate = offer ? createOfferTemplate(offer) : '';
+  const offersTemplate = offers ? createOffersTemplate(offers) : '';
 
   return `<li class="trip-events__item">
             <div class="event">
@@ -34,7 +34,7 @@ const createPointTemplate = (point) => {
                 &euro;&nbsp;<span class="event__price-value">${price}</span>
               </p>
               <h4 class="visually-hidden">Offers:</h4>
-              ${offerTemplate}
+              ${offersTemplate}
               <button class="event__favorite-btn ${favoriteClassName}" type="button">
                 <span class="visually-hidden">Add to favorite</span>
                 <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">

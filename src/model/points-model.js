@@ -32,7 +32,7 @@ export default class PointsModel extends AbstractObserver {
       this.#points = points.map(this.#adaptToClient);
       this.#destination = await this.#apiService.destination;
       this.#offers = await this.#apiService.offers;
-      // console.log(this.#points);
+
     } catch(err) {
       this.#points = [];
     }
@@ -108,14 +108,12 @@ export default class PointsModel extends AbstractObserver {
       timeStart: dayjs(point['date_from']),
       timeEnd: dayjs(point['date_to']),
       isFavorite: point['is_favorite'],
-      offer: point['offers'],
     };
 
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
     delete adaptedPoint['is_favorite'];
-    delete adaptedPoint['offers'];
 
     return adaptedPoint;
   }
