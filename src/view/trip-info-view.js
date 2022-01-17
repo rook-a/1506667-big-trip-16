@@ -30,7 +30,7 @@ export default class CreateTripInfo extends SmartView {
   #createTotalTripPrice = () => {
     const points = this.#points;
     const totalPointPrice = points.reduce((sum, point) => sum + point.price, 0);
-    const totalOffersSum = points.map(({offer}) => offer.reduce((sum, currentOffer) => sum + currentOffer.price, 0));
+    const totalOffersSum = points.map(({offers}) => offers.reduce((sum, currentOffer) => sum + currentOffer.price, 0));
     const totalTripPrice = totalOffersSum.reduce((sum, offerPrice) => sum + offerPrice, totalPointPrice);
 
     return totalTripPrice;
@@ -41,20 +41,26 @@ export default class CreateTripInfo extends SmartView {
 
     if (points.length > 0) {
       const firstCityName = points[0].destination.name;
-      const secondCityName = points[1].destination.name;
       const lastCityName = points[points.length - 1].destination.name;
 
       switch (points.length) {
-        case 0:
-          break;
-        case 1:
+        case 0: {
+          return '';
+        }
+        case 1: {
           return `${firstCityName}`;
-        case 2:
+        }
+        case 2: {
           return `${firstCityName}&nbsp;&mdash;&nbsp;${lastCityName}`;
-        case 3:
+        }
+        case 3: {
+          const secondCityName = points[1].destination.name;
+
           return `${firstCityName}&nbsp;&mdash;&nbsp;${secondCityName}&nbsp;&mdash;&nbsp;${lastCityName}`;
-        default:
+        }
+        default: {
           return `${firstCityName}&nbsp;&mdash;&nbsp;...&nbsp;&mdash;&nbsp;${lastCityName}`;
+        }
       }
     }
   }

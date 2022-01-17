@@ -78,21 +78,18 @@ export default class ApiService {
   }
 
   #adaptToServer = (point) => {
-    // console.log(point);
     const adaptedPoint = {
       ...point,
       'base_price': point.price,
       'date_from': point.timeStart.toISOString(),
       'date_to': point.timeEnd.toISOString(),
       'is_favorite': point.isFavorite,
-      'offers': point.offer,
     };
 
     delete adaptedPoint.price;
     delete adaptedPoint.timeStart;
     delete adaptedPoint.timeEnd;
     delete adaptedPoint.isFavorite;
-    delete adaptedPoint.offer;
 
     return adaptedPoint;
   }

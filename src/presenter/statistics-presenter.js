@@ -31,10 +31,6 @@ export default class StatisticsPresenter {
     this.#pointsModel.removeObserver(this.#onModelEvent);
   }
 
-  #onModelEvent = () => {
-    this.init();
-  }
-
   #renderStatistics = () => {
     const statistics = this.#tripEventsContainer.querySelector('.statistics');
 
@@ -155,5 +151,9 @@ export default class StatisticsPresenter {
     ctx.height = BAR_HEIGHT * labels.length;
 
     return this.#createChart({ctx, labels, data, formatter, text});
+  }
+
+  #onModelEvent = () => {
+    this.init();
   }
 }

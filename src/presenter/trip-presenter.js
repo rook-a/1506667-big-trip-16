@@ -64,75 +64,6 @@ export default class TripPresenter {
     this.#pointNewPresenter.init(defaultPoint, this.#pointsModel.offers, this.#pointsModel.destination);
   }
 
-  #onModeChange = () => {
-    this.#pointNewPresenter.destroy();
-    this.#pointPresenter.forEach((presenter) => presenter.resetView());
-  }
-
-  #onViewAction = async (actionType, updateType, update) => {
-    switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this.#pointPresenter.get(update.id).setViewState(State.SAVING);
-
-        try {
-          await this.#pointsModel.updatePoint(updateType, update);
-        } catch(err) {
-          this.#pointPresenter.get(update.id).setViewState(State.ABORTING);
-        }
-        break;
-      case UserAction.ADD_POINT:
-        this.#pointNewPresenter.setSaving();
-
-        try {
-          await this.#pointsModel.addPoint(updateType, update);
-        } catch(err) {
-          this.#pointNewPresenter.setAborting();
-        }
-        break;
-      case UserAction.DELETE_POINT:
-        this.#pointPresenter.get(update.id).setViewState(State.DELETING);
-
-        try {
-          await this.#pointsModel.deletePoint(updateType, update);
-        } catch(err) {
-          this.#pointPresenter.get(update.id).setViewState(State.ABORTING);
-        }
-        break;
-    }
-  }
-
-  #onModelEvent = (updateType, data) => {
-    switch (updateType) {
-      case UpdateType.PATCH:
-        this.#pointPresenter.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destination);
-        break;
-      case UpdateType.MINOR:
-        this.#clearEvents(true);
-        this.#renderEvents();
-        break;
-      case UpdateType.MAJOR:
-        this.#clearEvents(true);
-        this.#renderEvents();
-        break;
-      case UpdateType.INIT:
-        this.#isLoading = false;
-        remove(this.#loadingComponent);
-        this.#renderEvents();
-        break;
-    }
-  }
-
-  onSortChange = (sortType) => {
-    if (this.#currentSortType === sortType) {
-      return;
-    }
-
-    this.#currentSortType = sortType;
-
-    this.#clearEvents();
-    this.#renderEvents();
-  }
-
   #renderSort = () => {
     this.#sortComponent = new CreateSort(this.#currentSortType);
     this.#sortComponent.setOnSortChange(this.onSortChange);
@@ -210,5 +141,74 @@ export default class TripPresenter {
 
   destroy = () => {
     this.#clearEvents();
+  }
+
+  #onModeChange = () => {
+    this.#pointNewPresenter.destroy();
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  }
+
+  #onViewAction = async (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointPresenter.get(update.id).setViewState(State.SAVING);
+
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch(err) {
+          this.#pointPresenter.get(update.id).setViewState(State.ABORTING);
+        }
+        break;
+      case UserAction.ADD_POINT:
+        this.#pointNewPresenter.setSaving();
+
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+        } catch(err) {
+          this.#pointNewPresenter.setAborting();
+        }
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointPresenter.get(update.id).setViewState(State.DELETING);
+
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+        } catch(err) {
+          this.#pointPresenter.get(update.id).setViewState(State.ABORTING);
+        }
+        break;
+    }
+  }
+
+  #onModelEvent = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#pointPresenter.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destination);
+        break;
+      case UpdateType.MINOR:
+        this.#clearEvents(true);
+        this.#renderEvents();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearEvents(true);
+        this.#renderEvents();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderEvents();
+        break;
+    }
+  }
+
+  onSortChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#currentSortType = sortType;
+
+    this.#clearEvents();
+    this.#renderEvents();
   }
 }

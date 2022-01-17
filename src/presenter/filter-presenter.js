@@ -36,6 +36,11 @@ export default class FilterPresenter {
     remove(prevFilterComponent);
   }
 
+  destroy = () => {
+    remove(this.#filterComponent);
+    this.#filterComponent = null;
+  }
+
   #onModelEvent = () => {
     this.init();
   }
@@ -46,10 +51,5 @@ export default class FilterPresenter {
     }
 
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
-  }
-
-  destroy = () => {
-    remove(this.#filterComponent);
-    this.#filterComponent = null;
   }
 }

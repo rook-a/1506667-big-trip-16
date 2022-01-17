@@ -143,8 +143,6 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update
     );
-    // console.log('true = minor/false = patch', isMinorUpdate);
-    // console.log(update);
   }
 
   #onClickToClose = () => {

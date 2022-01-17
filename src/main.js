@@ -16,11 +16,9 @@ const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 const tripInfoContainer = document.querySelector('.trip-main');
 const siteMenuContainer = tripInfoContainer.querySelector('.trip-controls__navigation');
 const tripFiltersContainer = tripInfoContainer.querySelector('.trip-controls__filters');
-
-const siteMenuComponent = new CreateSiteMenu(DEFAULT_VALUE.menu);
-
 const tripEventsContainer = document.querySelector('.trip-events');
 
+const siteMenuComponent = new CreateSiteMenu(DEFAULT_VALUE.menu);
 const pointsModel = new PointsModel(new ApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
 

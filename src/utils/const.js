@@ -1,12 +1,18 @@
+export const MENU_TABS = {
+  TABLE: 'TABLE',
+  STATS: 'STATS',
+};
+
+export const DATEPICKER_DEFAULT_SETTING = {
+  enableTime: true,
+  'time_24hr': true,
+  dateFormat: 'd/m/y H:i',
+};
+
 export const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PAST: 'past',
-};
-
-export const MENU_TABS = {
-  TABLE: 'TABLE',
-  STATS: 'STATS',
 };
 
 export const SortType = {
@@ -26,12 +32,6 @@ export const DEFAULT_VALUE = {
 export const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
-};
-
-export const DATEPICKER_DEFAULT_SETTING = {
-  enableTime: true,
-  'time_24hr': true,
-  dateFormat: 'd/m/y H:i',
 };
 
 export const UserAction = {

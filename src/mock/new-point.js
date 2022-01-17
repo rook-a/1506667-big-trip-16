@@ -19,13 +19,13 @@ const generateElement = (elements) => {
   return elements[randomIndex];
 };
 
-const currentOffer = generateElement(MOCK_OFFERS);
+const currentOffers = generateElement(MOCK_OFFERS);
 const currentDestination = generateElement(MOCK_DESTINATIONS);
 const currentDescription = generateElement(MOCK_DESCRIPTIONS);
 
 export const defaultPoint = {
   id: '27',
-  type: currentOffer.type,
+  type: currentOffers.type,
   destination: {
     name: currentDestination.name,
     description: currentDestination.description,
@@ -33,14 +33,12 @@ export const defaultPoint = {
       {
         src: `http://picsum.photos/248/152?r=${getRandomInteger(FROM, TO)}`,
         description: currentDescription,
-      }
+      },
     ],
   },
   timeStart: dayjs().add(1, 'd'),
   timeEnd: dayjs().add(3, 'd'),
   price: 5,
-  offer: currentOffer.offers,
+  offers: currentOffers.offers,
   isFavorite: false,
 };
-
-// console.log(defaultPoint);

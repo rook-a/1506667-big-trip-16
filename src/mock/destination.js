@@ -6,7 +6,7 @@ export const MOCK_DESTINATIONS = [
       {
         src: '',
         description: '',
-      }
+      },
     ],
   },
   {
@@ -16,7 +16,7 @@ export const MOCK_DESTINATIONS = [
       {
         src: '',
         description: '',
-      }
+      },
     ],
   },
   {
@@ -26,7 +26,7 @@ export const MOCK_DESTINATIONS = [
       {
         src: '',
         description: '',
-      }
+      },
     ],
   },
   {
@@ -36,7 +36,7 @@ export const MOCK_DESTINATIONS = [
       {
         src: '',
         description: '',
-      }
+      },
     ],
   },
   {
@@ -46,17 +46,7 @@ export const MOCK_DESTINATIONS = [
       {
         src: '',
         description: '',
-      }
-    ],
-  },
-  {
-    name: 'London',
-    description: 'Sed sed nisi sed augue convallis suscipit in sed felis.',
-    pictures: [
-      {
-        src: '',
-        description: '',
-      }
+      },
     ],
   },
   {
@@ -66,7 +56,7 @@ export const MOCK_DESTINATIONS = [
       {
         src: '',
         description: '',
-      }
+      },
     ],
   },
   {
@@ -76,7 +66,7 @@ export const MOCK_DESTINATIONS = [
       {
         src: '',
         description: '',
-      }
+      },
     ],
   },
 ];
