@@ -318,16 +318,11 @@ export default class CreateEditPoint extends SmartView {
   }
 
   #onTimeStartChange = ([userDate]) => {
-    const dateStartinput = this.getElement.querySelector('#event-start-time-1');
     const saveBtn = this.getElement.querySelector('.event__save-btn');
 
     if (dayjs([userDate]).isAfter(this._data.timeEnd)) {
-      dateStartinput.setCustomValidity('Invalid value');
-      dateStartinput.reportValidity();
       saveBtn.disabled = true;
     } else {
-      dateStartinput.setCustomValidity('');
-      dateStartinput.reportValidity();
       saveBtn.disabled = false;
 
       this.updateData({
@@ -337,16 +332,11 @@ export default class CreateEditPoint extends SmartView {
   }
 
   #onTimeEndChange = ([userDate]) => {
-    const dateStartinput = this.getElement.querySelector('#event-end-time-1');
     const saveBtn = this.getElement.querySelector('.event__save-btn');
 
     if (dayjs([userDate]).isBefore(this._data.timeStart)) {
-      dateStartinput.setCustomValidity('Invalid value');
-      dateStartinput.reportValidity();
       saveBtn.disabled = true;
     } else {
-      dateStartinput.setCustomValidity('');
-      dateStartinput.reportValidity();
       saveBtn.disabled = false;
 
       this.updateData({
