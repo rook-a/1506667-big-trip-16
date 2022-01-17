@@ -38,18 +38,3 @@ export const createHumanizeTimeDuration = (timeStart, timeEnd) => {
 };
 
 export const isDatesEqual = (dateFirst, dateSecond) => (dateFirst === null && dateSecond === null) || dayjs(dateFirst).isSame(dateSecond);
-
-export const defaultPoint = {
-  id: '',
-  type: 'taxi',
-  destination: {
-    name: 'Amsterdam',
-    description: 'Bla bla bla',
-    pictures: [],
-  },
-  timeStart: dayjs().add(1, 'd'),
-  timeEnd: dayjs().add(3, 'd'),
-  price: 5,
-  offer: [],
-  isFavorite: false,
-};

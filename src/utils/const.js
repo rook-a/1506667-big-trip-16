@@ -4,10 +4,10 @@ export const FilterType = {
   PAST: 'past',
 };
 
-export const MENU_TABS = [
-  'Table',
-  'Stats',
-];
+export const MENU_TABS = {
+  TABLE: 'TABLE',
+  STATS: 'STATS',
+};
 
 export const SortType = {
   DAY: 'day',
@@ -18,7 +18,7 @@ export const SortType = {
 };
 
 export const DEFAULT_VALUE = {
-  menu: MENU_TABS[0],
+  menu: MENU_TABS.TABLE,
   filter: FilterType.EVERYTHING,
   sorting: SortType.DAY,
 };

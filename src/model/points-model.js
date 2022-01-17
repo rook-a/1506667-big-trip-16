@@ -1,5 +1,6 @@
 import AbstractObserver from '../utils/abstract-observer.js';
-import {UpdateType} from '../utils/const.js';
+import {UpdateType, FilterType} from '../utils/const.js';
+import {filters} from '../utils/filter.js';
 import dayjs from 'dayjs';
 
 export default class PointsModel extends AbstractObserver {
@@ -31,7 +32,7 @@ export default class PointsModel extends AbstractObserver {
       this.#points = points.map(this.#adaptToClient);
       this.#destination = await this.#apiService.destination;
       this.#offers = await this.#apiService.offers;
-      // console.log(this.#points.length);
+      // console.log(this.#points);
     } catch(err) {
       this.#points = [];
     }
@@ -93,6 +94,12 @@ export default class PointsModel extends AbstractObserver {
       throw new Error('Can\'t delete point');
     }
   }
+
+  getFilteredPointsCount = () => ({
+    [FilterType.EVERYTHING]: this.#points.length,
+    [FilterType.FUTURE]: filters[FilterType.FUTURE](this.#points).length,
+    [FilterType.PAST]: filters[FilterType.PAST](this.#points).length,
+  })
 
   #adaptToClient = (point) => {
     const adaptedPoint = {

@@ -7,7 +7,8 @@ import LoadingView from '../view/loading-view.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {filters} from '../utils/filter.js';
 import {DEFAULT_VALUE, UpdateType, UserAction, FilterType, SortType, State} from '../utils/const.js';
-import {sortByPrice, sortByDays, sortByTime, defaultPoint} from '../utils/utils.js';
+import {sortByPrice, sortByDays, sortByTime} from '../utils/utils.js';
+import {defaultPoint} from '../mock/new-point.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -59,7 +60,6 @@ export default class TripPresenter {
   }
 
   createPoint = () => {
-    this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#pointNewPresenter.init(defaultPoint, this.#pointsModel.offers, this.#pointsModel.destination);
   }
@@ -122,7 +122,7 @@ export default class TripPresenter {
     }
   }
 
-  #onSortChange = (sortType) => {
+  onSortChange = (sortType) => {
     if (this.#currentSortType === sortType) {
       return;
     }
@@ -135,7 +135,7 @@ export default class TripPresenter {
 
   #renderSort = () => {
     this.#sortComponent = new CreateSort(this.#currentSortType);
-    this.#sortComponent.setOnSortChange(this.#onSortChange);
+    this.#sortComponent.setOnSortChange(this.onSortChange);
 
     render(this.#tripEventsContainer, this.#sortComponent, RenderPosition.BEFOREEND);
   }
@@ -185,6 +185,7 @@ export default class TripPresenter {
 
   #renderEvents = () => {
     const pointsCount = this.points.length;
+    const formSort = this.#tripEventsContainer.querySelector('.trip-sort');
 
     if (this.#isLoading) {
       this.#renderLoading();
@@ -192,12 +193,22 @@ export default class TripPresenter {
     }
 
     if (pointsCount === 0) {
+      this.#renderListPoints();
       this.#renderNoPointMessage();
+      return;
+    }
+
+    //проверка наличия формы сортировки на странице чтобы исключить неоднократное добавление при повторных кликах на TABLE
+    if (formSort) {
       return;
     }
 
     this.#renderSort();
     this.#renderListPoints();
     this.#renderPoints();
+  }
+
+  destroy = () => {
+    this.#clearEvents();
   }
 }
