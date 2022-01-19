@@ -18,7 +18,7 @@ export default class StatisticsPresenter {
 
   init = () => {
     this.#statisticsComponent = new StatisticsView();
-    this.#pointsModel.addObserver(this.#getModelEvent);
+    this.#pointsModel.addObserver(this.#makeOnModelEvent);
 
     this.#renderStatistics();
     this.#renderMoneyChart();
@@ -28,13 +28,13 @@ export default class StatisticsPresenter {
 
   destroy = () => {
     remove(this.#statisticsComponent);
-    this.#pointsModel.removeObserver(this.#getModelEvent);
+    this.#pointsModel.removeObserver(this.#makeOnModelEvent);
   }
 
   #renderStatistics = () => {
     const statistics = this.#tripEventsContainer.querySelector('.statistics');
 
-    //проверка на наличия статистики на странице чтобы исключить неоднократное добавление при повторных кликах на STATS
+    //проверка наличия статистики на странице чтобы исключить неоднократное добавление при повторных кликах на STATS
     if (statistics) {
       return;
     }
@@ -153,7 +153,7 @@ export default class StatisticsPresenter {
     return this.#createChart({ctx, labels, data, formatter, text});
   }
 
-  #getModelEvent = () => {
+  #makeOnModelEvent = () => {
     this.init();
   }
 }

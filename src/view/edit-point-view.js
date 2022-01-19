@@ -330,29 +330,22 @@ export default class CreateEditPoint extends SmartView {
   #onTimeStartChange = ([userDate]) => {
     const saveBtn = this.getElement.querySelector('.event__save-btn');
 
-    if (dayjs(this._data.timeEnd).diff([userDate], 'm') < 1) {
-      saveBtn.disabled = true;
-    } else {
-      saveBtn.disabled = false;
+    saveBtn.disabled = dayjs(this._data.timeEnd).diff(userDate, 'm') < 1;
 
-      this.updateData({
-        timeStart: dayjs(userDate),
-      }, true);
-    }
+    this.updateData({
+      timeStart: dayjs(userDate),
+    }, true);
   }
 
   #onTimeEndChange = ([userDate]) => {
     const saveBtn = this.getElement.querySelector('.event__save-btn');
+    const newTimeEnd = dayjs(userDate);
 
-    if (dayjs([userDate]).diff(this._data.timeStart, 'm') < 1) {
-      saveBtn.disabled = true;
-    } else {
-      saveBtn.disabled = false;
+    saveBtn.disabled = newTimeEnd.diff(this._data.timeStart, 'm') < 0;
 
-      this.updateData({
-        timeEnd: dayjs(userDate),
-      }, true);
-    }
+    this.updateData({
+      timeEnd: newTimeEnd,
+    }, true);
   }
 
   setOnDeleteClick = (callback) => {
