@@ -32,10 +32,10 @@ export default class TripPresenter {
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
 
-    this.#pointNewPresenter = new PointNewPresenter(this.#listPointComponent, this.#getViewAction);
+    this.#pointNewPresenter = new PointNewPresenter(this.#listPointComponent, this.#makeOnViewAction);
 
-    this.#pointsModel.addObserver(this.#getModelEvent);
-    this.#filterModel.addObserver(this.#getModelEvent);
+    this.#pointsModel.addObserver(this.#makeOnModelEvent);
+    this.#filterModel.addObserver(this.#makeOnModelEvent);
   }
 
   get points() {
@@ -72,7 +72,7 @@ export default class TripPresenter {
   }
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#listPointComponent, this.#getViewAction, this.#getModeChange);
+    const pointPresenter = new PointPresenter(this.#listPointComponent, this.#makeOnViewAction, this.#makeOnModeChange);
     pointPresenter.init(point, this.#pointsModel.offers, this.#pointsModel.destinations);
     this.#pointPresenter.set(point.id, pointPresenter);
   }
@@ -143,12 +143,12 @@ export default class TripPresenter {
     this.#clearEvents();
   }
 
-  #getModeChange = () => {
+  #makeOnModeChange = () => {
     this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  #getViewAction = async (actionType, updateType, update) => {
+  #makeOnViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenter.get(update.id).setViewState(State.SAVING);
@@ -181,7 +181,7 @@ export default class TripPresenter {
     }
   }
 
-  #getModelEvent = (updateType, data) => {
+  #makeOnModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenter.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destinations);

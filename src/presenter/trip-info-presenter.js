@@ -10,7 +10,7 @@ export default class TripInfoPresenter {
     this.#tripInfoContainer = tripInfoContainer;
     this.#pointsModel = pointsModel;
 
-    this.#pointsModel.addObserver(this.#getModelEvent);
+    this.#pointsModel.addObserver(this.#makeOnModelEvent);
   }
 
   init = () => {
@@ -41,7 +41,7 @@ export default class TripInfoPresenter {
     render(this.#tripInfoContainer, this.#tripInfoComponent, RenderPosition.AFTERBEGIN);
   }
 
-  #getModelEvent = () => {
+  #makeOnModelEvent = () => {
     this.init();
   }
 }
