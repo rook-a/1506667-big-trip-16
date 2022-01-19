@@ -29,10 +29,18 @@ export const sortByTime = (pointFirst, pointSecond) => {
   return 0;
 };
 
+export const addZero = (count) => {
+  if (count < 10) {
+    return `0${count}`;
+  }
+
+  return count;
+};
+
 export const createHumanizeTimeDuration = (timeStart, timeEnd) => {
-  const minutesDuration = timeEnd.diff(timeStart, 'm') % 60 > 0 ? `${timeEnd.diff(timeStart, 'm') % 60}M` : '';
-  const hoursDuration = timeEnd.diff(timeStart, 'h') % 24 > 0 ? `${timeEnd.diff(timeStart, 'h') % 24}H` : '';
-  const daysDuration = timeEnd.diff(timeStart, 'd') > 0 ? `${timeEnd.diff(timeStart, 'd')}D` : '';
+  const minutesDuration = timeEnd.diff(timeStart, 'm') % 60 > 0 ? `${addZero(timeEnd.diff(timeStart, 'm') % 60)}M` : '';
+  const hoursDuration = timeEnd.diff(timeStart, 'h') % 24 > 0 ? `${addZero(timeEnd.diff(timeStart, 'h') % 24)}H` : '';
+  const daysDuration = timeEnd.diff(timeStart, 'd') > 0 ? `${addZero(timeEnd.diff(timeStart, 'd'))}D` : '';
 
   return daysDuration + hoursDuration + minutesDuration;
 };

@@ -13,8 +13,8 @@ export default class FilterPresenter {
     this.#filterModel = filterModel;
     this.#pointsModel = pointsModel;
 
-    this.#pointsModel.addObserver(this.#onModelEvent);
-    this.#filterModel.addObserver(this.#onModelEvent);
+    this.#pointsModel.addObserver(this.#getModelEvent);
+    this.#filterModel.addObserver(this.#getModelEvent);
   }
 
   get filters() {
@@ -41,7 +41,7 @@ export default class FilterPresenter {
     this.#filterComponent = null;
   }
 
-  #onModelEvent = () => {
+  #getModelEvent = () => {
     this.init();
   }
 

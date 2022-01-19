@@ -13,7 +13,7 @@ export default class ApiService {
     return this.#load({url: 'points'}).then(ApiService.parseResponse);
   }
 
-  get destination() {
+  get destinations() {
     return this.#load({url: 'destinations'}).then(ApiService.parseResponse);
   }
 
@@ -47,14 +47,10 @@ export default class ApiService {
     return parsedResponse;
   }
 
-  deletePoint = async (point) => {
-    const response = await this.#load({
-      url: `points/${point.id}`,
-      method: Method.DELETE,
-    });
-
-    return response;
-  }
+  deletePoint = async (point) => await this.#load({
+    url: `points/${point.id}`,
+    method: Method.DELETE,
+  });
 
   #load = async ({
     url,

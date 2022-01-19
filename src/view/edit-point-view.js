@@ -5,7 +5,7 @@ import he from 'he';
 import SmartView from './smart-view.js';
 import {DATEPICKER_DEFAULT_SETTING} from '../utils/const.js';
 import {MOCK_OFFERS} from '../mock/offers';
-import {MOCK_DESTINATIONS} from '../mock/destination';
+import {MOCK_DESTINATIONS} from '../mock/destinations';
 
 const createPictureTemplate = (pictures) => `<div class="event__photos-container">
     <div class="event__photos-tape">
@@ -15,14 +15,14 @@ const createPictureTemplate = (pictures) => `<div class="event__photos-container
 
 const createDescriptionTemplate = ({description}) => description ? `<p class="event__destination-description">${description}</p>` : '';
 
-const createOffersCheckboxTemplate = ({offers}, pointOffer, isDisabled) => offers ? `<ul class="event__available-offers">
+const createOffersCheckboxTemplate = ({offers}, pointOffers, isDisabled) => offers ? `<ul class="event__available-offers">
     ${offers.map(({id, title, price}) => `<li class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden"
         id="${id}"
         type="checkbox"
         name="${title}"
-        ${pointOffer.map((offer) => id === offer.id ? 'checked' : '').join('')}
+        ${pointOffers.map((offer) => id === offer.id ? 'checked' : '').join('')}
         ${isDisabled ? 'disabled' : ''}
       >
       <label class="event__offer-label" for="${id}">
@@ -52,8 +52,9 @@ const createTypeTemplate = (types, isDisabled) => `<div class="event__type-list"
     </fieldset>
   </div>`;
 
-const createEditPointTemplate = (point, OFFERS, DESTINATION) => {
+const createEditPointTemplate = (point, OFFERS, DESTINATIONS) => {
   const {
+    id,
     type,
     price,
     destination,
@@ -65,13 +66,21 @@ const createEditPointTemplate = (point, OFFERS, DESTINATION) => {
     isDeleting,
   } = point;
 
-  const filterDescription = DESTINATION.length > 0 ? DESTINATION.find(({name}) => destination.name === name) : MOCK_DESTINATIONS.find(({name}) => name === name);
+  const filterDescription = DESTINATIONS.length > 0 ? DESTINATIONS.find(({name}) => destination.name === name) : MOCK_DESTINATIONS.find(({name}) => name === name);
   const filterPoint = OFFERS.length > 0 ? OFFERS.find((item) => item.type === type) : MOCK_OFFERS.find((item) => item.type === type);
-  const cityChoiceTemplate = DESTINATION.length > 0 ? createDropdownCityTemplate(DESTINATION) : createDropdownCityTemplate(MOCK_DESTINATIONS);
+  const cityChoiceTemplate = DESTINATIONS.length > 0 ? createDropdownCityTemplate(DESTINATIONS) : createDropdownCityTemplate(MOCK_DESTINATIONS);
   const picturesTemplate = destination.pictures ? createPictureTemplate(destination.pictures) : '';
   const descriptionTemplate = createDescriptionTemplate(filterDescription);
   const offersTemplate = offers ? createOffersTemplate(filterPoint, offers, isDisabled) : createOffersTemplate(filterPoint, filterPoint.offers, isDisabled);
   const typeTemplate = OFFERS.length > 0 ? createTypeTemplate(OFFERS, isDisabled) : createTypeTemplate(MOCK_OFFERS, isDisabled);
+
+  const createResetBtn = () => {
+    if (!id) {
+      return 'Cancel';
+    }
+
+    return isDeleting ? 'Deleting...' : 'Delete';
+  };
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
@@ -112,7 +121,7 @@ const createEditPointTemplate = (point, OFFERS, DESTINATION) => {
                 </div>
 
                 <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-                <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+                <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${createResetBtn()}</button>
                 <button class="event__rollup-btn" type="button">
                   <span class="visually-hidden">Open event</span>
                 </button>
@@ -137,19 +146,19 @@ export default class CreateEditPoint extends SmartView {
   #datepickerTimeStart = null;
   #datepickerTimeEnd = null;
   #OFFERS = null;
-  #DESTINATION = null;
+  #DESTINATIONS = null;
 
-  constructor(point, OFFERS, DESTINATION) {
+  constructor(point, OFFERS, DESTINATIONS) {
     super();
     this.#OFFERS = OFFERS;
-    this.#DESTINATION = DESTINATION;
+    this.#DESTINATIONS = DESTINATIONS;
     this._data = CreateEditPoint.parsePointToData(point);
 
     this.#setInnerHandlers();
   }
 
   get getTemplate() {
-    return createEditPointTemplate(this._data, this.#OFFERS, this.#DESTINATION);
+    return createEditPointTemplate(this._data, this.#OFFERS, this.#DESTINATIONS);
   }
 
   #setInnerHandlers = () => {
@@ -189,7 +198,6 @@ export default class CreateEditPoint extends SmartView {
     this.#datepickerTimeEnd = flatpickr(
       this.getElement.querySelector('#event-end-time-1'),
       Object.assign({}, DATEPICKER_DEFAULT_SETTING, {
-        minDate: this._data.timeStart.toString(),
         defaultDate: this._data.timeEnd.toString(),
         defaultHour: this._data.timeEnd.format('HH'),
         defaultMinute: this._data.timeEnd.format('mm'),
@@ -250,7 +258,7 @@ export default class CreateEditPoint extends SmartView {
     const priceInput = this.getElement.querySelector('.event__input--destination');
     const saveBtn = this.getElement.querySelector('.event__save-btn');
 
-    const destinations = this.#DESTINATION.length > 0 ? this.#DESTINATION : MOCK_DESTINATIONS;
+    const destinations = this.#DESTINATIONS.length > 0 ? this.#DESTINATIONS : MOCK_DESTINATIONS;
 
     destinations.map((destination) => {
       const {name, description, pictures} = destination;
@@ -264,13 +272,15 @@ export default class CreateEditPoint extends SmartView {
             name: evt.target.value,
             description,
             pictures,
-          }
+          },
+          offers: this.#onOffersChange()
         });
-      } else {
-        priceInput.setCustomValidity('Invalid value. Choose a city from the list');
-        priceInput.reportValidity();
-        saveBtn.disabled = true;
       }
+
+      priceInput.setCustomValidity('Invalid value. Choose a city from the list');
+      priceInput.reportValidity();
+      saveBtn.disabled = true;
+
     });
   }
 
@@ -320,7 +330,7 @@ export default class CreateEditPoint extends SmartView {
   #onTimeStartChange = ([userDate]) => {
     const saveBtn = this.getElement.querySelector('.event__save-btn');
 
-    if (dayjs([userDate]).isAfter(this._data.timeEnd)) {
+    if (dayjs(this._data.timeEnd).diff([userDate], 'm') < 1) {
       saveBtn.disabled = true;
     } else {
       saveBtn.disabled = false;
@@ -334,7 +344,7 @@ export default class CreateEditPoint extends SmartView {
   #onTimeEndChange = ([userDate]) => {
     const saveBtn = this.getElement.querySelector('.event__save-btn');
 
-    if (dayjs([userDate]).isBefore(this._data.timeStart)) {
+    if (dayjs([userDate]).diff(this._data.timeStart, 'm') < 1) {
       saveBtn.disabled = true;
     } else {
       saveBtn.disabled = false;
