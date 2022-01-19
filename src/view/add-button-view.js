@@ -17,5 +17,6 @@ export default class CreateAddButton extends AbstractView {
   #onClickAddButton = (evt) => {
     evt.preventDefault();
     this._callback.clickAddButton();
+    this.getElement.disabled = true;
   }
 }

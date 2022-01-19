@@ -12,12 +12,12 @@ export default class PointNewPresenter {
     this.#changeDate = changeData;
   }
 
-  init(point, OFFERS, DESTINATION) {
+  init(point, OFFERS, DESTINATIONS) {
     if (this.#editPointComponent !== null) {
       return;
     }
 
-    this.#editPointComponent = new CreateEditPoint(point, OFFERS, DESTINATION);
+    this.#editPointComponent = new CreateEditPoint(point, OFFERS, DESTINATIONS);
     this.#editPointComponent.setOnFormSubmit(this.#onClickToSave);
     this.#editPointComponent.setOnEditPointClick(this.#onClickToDelete);
     this.#editPointComponent.setOnDeleteClick(this.#onClickToDelete);
@@ -38,6 +38,7 @@ export default class PointNewPresenter {
     this.#editPointComponent = null;
 
     document.removeEventListener('keydown', this.#onEscKeyDown);
+    this.getDisabledAddBtn();
   }
 
   setSaving = () => {
@@ -55,8 +56,17 @@ export default class PointNewPresenter {
         isDeleting: false,
       });
     };
-
     this.#editPointComponent.shake(resetFormState);
+  }
+
+  getDisabledAddBtn = (isDisabled) => {
+    const addBtn = document.querySelector('.trip-main__event-add-btn');
+
+    if (isDisabled) {
+      addBtn.disabled = true;
+    } else {
+      addBtn.disabled = false;
+    }
   }
 
   #onClickToSave = (point) => {

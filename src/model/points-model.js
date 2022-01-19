@@ -7,7 +7,7 @@ export default class PointsModel extends AbstractObserver {
   #apiService = null;
   #points = [];
   #offers = [];
-  #destination = [];
+  #destinations = [];
 
   constructor(apiService) {
     super();
@@ -22,15 +22,15 @@ export default class PointsModel extends AbstractObserver {
     return this.#offers;
   }
 
-  get destination() {
-    return this.#destination;
+  get destinations() {
+    return this.#destinations;
   }
 
   init = async () => {
     try {
       const points = await this.#apiService.points;
       this.#points = points.map(this.#adaptToClient);
-      this.#destination = await this.#apiService.destination;
+      this.#destinations = await this.#apiService.destinations;
       this.#offers = await this.#apiService.offers;
 
     } catch(err) {

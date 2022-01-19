@@ -1,5 +1,5 @@
 import {MOCK_OFFERS} from './offers.js';
-import {MOCK_DESTINATIONS} from './destination.js';
+import {MOCK_DESTINATIONS} from './destinations.js';
 import {MOCK_DESCRIPTIONS} from './description.js';
 import dayjs from 'dayjs';
 
@@ -24,7 +24,7 @@ const currentDestination = generateElement(MOCK_DESTINATIONS);
 const currentDescription = generateElement(MOCK_DESCRIPTIONS);
 
 export const defaultPoint = {
-  id: '27',
+  id: 0,
   type: currentOffers.type,
   destination: {
     name: currentDestination.name,

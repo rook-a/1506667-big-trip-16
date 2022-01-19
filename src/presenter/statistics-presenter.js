@@ -18,7 +18,7 @@ export default class StatisticsPresenter {
 
   init = () => {
     this.#statisticsComponent = new StatisticsView();
-    this.#pointsModel.addObserver(this.#onModelEvent);
+    this.#pointsModel.addObserver(this.#getModelEvent);
 
     this.#renderStatistics();
     this.#renderMoneyChart();
@@ -28,7 +28,7 @@ export default class StatisticsPresenter {
 
   destroy = () => {
     remove(this.#statisticsComponent);
-    this.#pointsModel.removeObserver(this.#onModelEvent);
+    this.#pointsModel.removeObserver(this.#getModelEvent);
   }
 
   #renderStatistics = () => {
@@ -153,7 +153,7 @@ export default class StatisticsPresenter {
     return this.#createChart({ctx, labels, data, formatter, text});
   }
 
-  #onModelEvent = () => {
+  #getModelEvent = () => {
     this.init();
   }
 }
