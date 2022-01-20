@@ -16,7 +16,7 @@ const createNoPointMessageTemplate = (filterType) => {
     </p>`
   );
 };
-export default class CreateNoPointMessage extends AbstractView {
+export default class NoPointMessageView extends AbstractView {
   constructor(filterType) {
     super();
     this._filterType = filterType;

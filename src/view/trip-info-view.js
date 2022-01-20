@@ -1,6 +1,11 @@
 import SmartView from './smart-view.js';
 import {sortByDays} from '../utils/utils.js';
 
+const NO_CITYS = 0;
+const ONE_CITY = 1;
+const TWO_CITYS = 2;
+const THREE_CITYS = 3;
+
 const createTripInfoTemplate = (cityNames, datesTrip, totalPrice) => (
   `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
@@ -15,7 +20,7 @@ const createTripInfoTemplate = (cityNames, datesTrip, totalPrice) => (
   </section>`
 );
 
-export default class CreateTripInfo extends SmartView {
+export default class TripInfoView extends SmartView {
   #points = [];
 
   constructor(points) {
@@ -44,16 +49,16 @@ export default class CreateTripInfo extends SmartView {
       const lastCityName = points[points.length - 1].destination.name;
 
       switch (points.length) {
-        case 0: {
+        case NO_CITYS: {
           return '';
         }
-        case 1: {
+        case ONE_CITY: {
           return `${firstCityName}`;
         }
-        case 2: {
+        case TWO_CITYS: {
           return `${firstCityName}&nbsp;&mdash;&nbsp;${lastCityName}`;
         }
-        case 3: {
+        case THREE_CITYS: {
           const secondCityName = points[1].destination.name;
 
           return `${firstCityName}&nbsp;&mdash;&nbsp;${secondCityName}&nbsp;&mdash;&nbsp;${lastCityName}`;

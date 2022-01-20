@@ -1,19 +1,21 @@
-import CreateSort from '../view/sort-view.js';
+import SortView from '../view/sort-view.js';
 import ListPoinView from '../view/list-point-view.js';
 import PointPresenter from './point-pressnter.js';
 import PointNewPresenter from './point-new-presenter.js';
-import CreateNoPointMessage from '../view/no-point-message-view.js';
+import NoPointMessageView from '../view/no-point-message-view.js';
 import LoadingView from '../view/loading-view.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {filters} from '../utils/filter.js';
 import {DEFAULT_VALUE, UpdateType, UserAction, FilterType, SortType, State} from '../utils/const.js';
 import {sortByPrice, sortByDays, sortByTime} from '../utils/utils.js';
-import {defaultPoint} from '../mock/new-point.js';
+import {defaultPoint} from '../utils/new-point.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
   #tripFiltersContainer = null;
   #pointsModel = null;
+  #offersModel = null;
+  #destinationsModel = null;
   #sortComponent = null;
   #filterModel = null;
   #noPointMessageComponent = null;
@@ -26,11 +28,13 @@ export default class TripPresenter {
 
   #listPointComponent = new ListPoinView();
 
-  constructor(tripEventsContainer, tripFiltersContainer, pointsModel, filterModel) {
+  constructor(tripEventsContainer, tripFiltersContainer, pointsModel, filterModel, offersModel, destinationsModel) {
     this.#tripEventsContainer = tripEventsContainer;
     this.#tripFiltersContainer = tripFiltersContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
 
     this.#pointNewPresenter = new PointNewPresenter(this.#listPointComponent, this.#makeOnViewAction);
 
@@ -60,12 +64,16 @@ export default class TripPresenter {
   }
 
   createPoint = () => {
+    defaultPoint.type = this.#offersModel.offers[0].type;
+    defaultPoint.destination = this.#destinationsModel.destinations[0];
+    defaultPoint.offers = this.#offersModel.offers[0].offers;
+
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#pointNewPresenter.init(defaultPoint, this.#pointsModel.offers, this.#pointsModel.destinations);
+    this.#pointNewPresenter.init(defaultPoint, this.#offersModel.offers, this.#destinationsModel.destinations);
   }
 
   #renderSort = () => {
-    this.#sortComponent = new CreateSort(this.#currentSortType);
+    this.#sortComponent = new SortView(this.#currentSortType);
     this.#sortComponent.setOnSortChange(this.onSortChange);
 
     render(this.#tripEventsContainer, this.#sortComponent, RenderPosition.BEFOREEND);
@@ -73,7 +81,7 @@ export default class TripPresenter {
 
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#listPointComponent, this.#makeOnViewAction, this.#makeOnModeChange);
-    pointPresenter.init(point, this.#pointsModel.offers, this.#pointsModel.destinations);
+    pointPresenter.init(point, this.#offersModel.offers, this.#destinationsModel.destinations);
     this.#pointPresenter.set(point.id, pointPresenter);
   }
 
@@ -88,7 +96,7 @@ export default class TripPresenter {
   }
 
   #renderNoPointMessage = () => {
-    this.#noPointMessageComponent = new CreateNoPointMessage(this.#currentFilterType);
+    this.#noPointMessageComponent = new NoPointMessageView(this.#currentFilterType);
     render(this.#tripEventsContainer, this.#noPointMessageComponent, RenderPosition.BEFOREEND);
   }
 
@@ -155,6 +163,7 @@ export default class TripPresenter {
 
         try {
           await this.#pointsModel.updatePoint(updateType, update);
+
         } catch(err) {
           this.#pointPresenter.get(update.id).setViewState(State.ABORTING);
         }
@@ -184,7 +193,7 @@ export default class TripPresenter {
   #makeOnModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenter.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destinations);
+        this.#pointPresenter.get(data.id).init(data, this.#offersModel.offers, this.#destinationsModel.destinations);
         break;
       case UpdateType.MINOR:
         this.#clearEvents(true);
@@ -211,5 +220,13 @@ export default class TripPresenter {
 
     this.#clearEvents();
     this.#renderEvents();
+  }
+
+  onFilterChange = (filterType) => {
+    if (this.#currentFilterType === filterType) {
+      return;
+    }
+
+    this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 }

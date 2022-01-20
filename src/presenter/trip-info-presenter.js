@@ -1,4 +1,4 @@
-import CreateTripInfo from '../view/trip-info-view.js';
+import TripInfoView from '../view/trip-info-view.js';
 import {RenderPosition, render, remove, replace} from '../utils/render.js';
 
 export default class TripInfoPresenter {
@@ -16,7 +16,7 @@ export default class TripInfoPresenter {
   init = () => {
     const points = this.#pointsModel.points;
     const prevTripInfoComponent = this.#tripInfoComponent;
-    this.#tripInfoComponent = new CreateTripInfo(this.#pointsModel.points);
+    this.#tripInfoComponent = new TripInfoView(this.#pointsModel.points);
 
     if (!points.length && prevTripInfoComponent === null) {
       return;

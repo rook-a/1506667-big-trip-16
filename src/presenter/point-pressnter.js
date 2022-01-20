@@ -1,5 +1,5 @@
-import CreateEditPoint from '../view/edit-point-view.js';
-import CreatePoint from '../view/point-view.js';
+import EditPointView from '../view/edit-point-view.js';
+import PointView from '../view/point-view.js';
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
 import {Mode, UserAction, UpdateType, State} from '../utils/const.js';
 import {isDatesEqual} from '../utils/utils.js';
@@ -27,8 +27,8 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#editPointComponent;
 
-    this.#pointComponent = new CreatePoint(point, OFFERS, DESTINATIONS);
-    this.#editPointComponent = new CreateEditPoint(point, OFFERS, DESTINATIONS);
+    this.#pointComponent = new PointView(point);
+    this.#editPointComponent = new EditPointView(point, OFFERS, DESTINATIONS);
 
     this.#pointComponent.setOnPointClick(this.#onClick);
     this.#pointComponent.setOnFavoriteClick(this.#onFavoriteClick);

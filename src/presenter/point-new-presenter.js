@@ -1,4 +1,4 @@
-import CreateEditPoint from '../view/edit-point-view.js';
+import EditPointView from '../view/edit-point-view.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {UserAction, UpdateType} from '../utils/const.js';
 
@@ -17,7 +17,7 @@ export default class PointNewPresenter {
       return;
     }
 
-    this.#editPointComponent = new CreateEditPoint(point, OFFERS, DESTINATIONS);
+    this.#editPointComponent = new EditPointView(point, OFFERS, DESTINATIONS);
     this.#editPointComponent.setOnFormSubmit(this.#onClickToSave);
     this.#editPointComponent.setOnEditPointClick(this.#onClickToDelete);
     this.#editPointComponent.setOnDeleteClick(this.#onClickToDelete);
@@ -61,12 +61,10 @@ export default class PointNewPresenter {
 
   getDisabledAddBtn = (isDisabled) => {
     const addBtn = document.querySelector('.trip-main__event-add-btn');
+    const addBtnDisabled = addBtn.disabled = true;
+    const addBtnEnabled = addBtn.disabled = false;
 
-    if (isDisabled) {
-      addBtn.disabled = true;
-    } else {
-      addBtn.disabled = false;
-    }
+    return isDisabled ? addBtnDisabled : addBtnEnabled;
   }
 
   #onClickToSave = (point) => {

@@ -22,7 +22,7 @@ const createSortTemplate = (currentSortType) => (
   </form>`
 );
 
-export default class CreateSort extends AbstractView {
+export default class SortView extends AbstractView {
   #currentSortType = null;
 
   constructor(currentSortType) {

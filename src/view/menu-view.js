@@ -1,15 +1,15 @@
-import {MENU_TABS} from '../utils/const.js';
+import {MenuTabs} from '../utils/const.js';
 import SmartView from './smart-view.js';
 
 const createSiteMenuTemplate = (defaultTab) => (
   `<nav class="trip-controls__trip-tabs  trip-tabs">
 
-    ${Object.values(MENU_TABS).map((tab) => `<a class="trip-tabs__btn ${defaultTab === tab ? 'trip-tabs__btn--active' : ''}" href="#" data-menu-tab="${tab}">${tab.toLowerCase()}</a>`).join('')}
+    ${Object.values(MenuTabs).map((tab) => `<a class="trip-tabs__btn ${defaultTab === tab ? 'trip-tabs__btn--active' : ''}" href="#" data-menu-tab="${tab}">${tab.toLowerCase()}</a>`).join('')}
 
   </nav>`
 );
 
-export default class CreateSiteMenu extends SmartView {
+export default class SiteMenuView extends SmartView {
   #defaultTab = null;
 
   constructor(defaultTab) {
