@@ -8,7 +8,7 @@ import {RenderPosition, render, remove} from '../utils/render.js';
 import {filters} from '../utils/filter.js';
 import {DEFAULT_VALUE, UpdateType, UserAction, FilterType, SortType, State} from '../utils/const.js';
 import {sortByPrice, sortByDays, sortByTime} from '../utils/utils.js';
-import {defaultPoint} from '../utils/new-point.js';
+import {blankPoint} from '../utils/blank-point.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -64,12 +64,12 @@ export default class TripPresenter {
   }
 
   createPoint = () => {
-    defaultPoint.type = this.#offersModel.offers[0].type;
-    defaultPoint.destination = this.#destinationsModel.destinations[0];
-    defaultPoint.offers = this.#offersModel.offers[0].offers;
+    blankPoint.type = this.#offersModel.offers[0].type;
+    blankPoint.destination = this.#destinationsModel.destinations[0];
+    blankPoint.offers = this.#offersModel.offers[0].offers;
 
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#pointNewPresenter.init(defaultPoint, this.#offersModel.offers, this.#destinationsModel.destinations);
+    this.#pointNewPresenter.init(blankPoint, this.#offersModel.offers, this.#destinationsModel.destinations);
   }
 
   #renderSort = () => {

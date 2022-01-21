@@ -187,7 +187,6 @@ export default class EditPointView extends SmartView {
         defaultDate: this._data.timeStart.toString(),
         defaultHour: this._data.timeStart.format('HH'),
         defaultMinute: this._data.timeStart.format('mm'),
-        maxDate: this._data.timeEnd.format('DD/MM/YY HH:mm'),
         onClose: this.#onTimeStartChange,
       })
     );
@@ -200,7 +199,6 @@ export default class EditPointView extends SmartView {
         defaultDate: this._data.timeEnd.toString(),
         defaultHour: this._data.timeEnd.format('HH'),
         defaultMinute: this._data.timeEnd.format('mm'),
-        minDate: this._data.timeStart.format('DD/MM/YY HH:mm'),
         onClose: this.#onTimeEndChange,
       })
     );
@@ -332,8 +330,7 @@ export default class EditPointView extends SmartView {
 
     this.updateData({
       timeStart: dayjs(userDate),
-      timeEnd: this._data.timeEnd,
-    });
+    }, true);
   }
 
   #onTimeEndChange = ([userDate]) => {
@@ -343,9 +340,8 @@ export default class EditPointView extends SmartView {
     saveBtn.disabled = newTimeEnd.diff(this._data.timeStart, 'm') < 0;
 
     this.updateData({
-      timeStart: this._data.timeStart,
       timeEnd: newTimeEnd,
-    });
+    }, true);
   }
 
   setOnDeleteClick = (callback) => {

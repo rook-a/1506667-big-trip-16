@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-export const defaultPoint = {
+export const blankPoint = {
   id: 0,
   type: '',
   destination: null,
