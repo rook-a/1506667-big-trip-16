@@ -1,4 +1,4 @@
-export const MENU_TABS = {
+export const MenuTabs = {
   TABLE: 'TABLE',
   STATS: 'STATS',
 };
@@ -24,7 +24,7 @@ export const SortType = {
 };
 
 export const DEFAULT_VALUE = {
-  menu: MENU_TABS.TABLE,
+  menu: MenuTabs.TABLE,
   filter: FilterType.EVERYTHING,
   sorting: SortType.DAY,
 };

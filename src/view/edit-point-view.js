@@ -4,8 +4,6 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 import SmartView from './smart-view.js';
 import {DATEPICKER_DEFAULT_SETTING} from '../utils/const.js';
-import {MOCK_OFFERS} from '../mock/offers';
-import {MOCK_DESTINATIONS} from '../mock/destinations';
 
 const createPictureTemplate = (pictures) => `<div class="event__photos-container">
     <div class="event__photos-tape">
@@ -66,13 +64,13 @@ const createEditPointTemplate = (point, OFFERS, DESTINATIONS) => {
     isDeleting,
   } = point;
 
-  const filterDescription = DESTINATIONS.length > 0 ? DESTINATIONS.find(({name}) => destination.name === name) : MOCK_DESTINATIONS.find(({name}) => name === name);
-  const filterPoint = OFFERS.length > 0 ? OFFERS.find((item) => item.type === type) : MOCK_OFFERS.find((item) => item.type === type);
-  const cityChoiceTemplate = DESTINATIONS.length > 0 ? createDropdownCityTemplate(DESTINATIONS) : createDropdownCityTemplate(MOCK_DESTINATIONS);
+  const filterDescription = DESTINATIONS.find(({name}) => destination.name === name);
+  const filterPoint = OFFERS.length > 0 ? OFFERS.find((item) => item.type === type) : '';
+  const cityChoiceTemplate = DESTINATIONS.length > 0 ? createDropdownCityTemplate(DESTINATIONS) : '';
   const picturesTemplate = destination.pictures ? createPictureTemplate(destination.pictures) : '';
   const descriptionTemplate = createDescriptionTemplate(filterDescription);
   const offersTemplate = offers ? createOffersTemplate(filterPoint, offers, isDisabled) : createOffersTemplate(filterPoint, filterPoint.offers, isDisabled);
-  const typeTemplate = OFFERS.length > 0 ? createTypeTemplate(OFFERS, isDisabled) : createTypeTemplate(MOCK_OFFERS, isDisabled);
+  const typeTemplate = OFFERS.length > 0 ? createTypeTemplate(OFFERS, isDisabled) : '';
 
   const createResetBtn = () => {
     if (!id) {
@@ -142,7 +140,7 @@ const createEditPointTemplate = (point, OFFERS, DESTINATIONS) => {
           </li>`;
 };
 
-export default class CreateEditPoint extends SmartView {
+export default class EditPointView extends SmartView {
   #datepickerTimeStart = null;
   #datepickerTimeEnd = null;
   #OFFERS = null;
@@ -152,7 +150,7 @@ export default class CreateEditPoint extends SmartView {
     super();
     this.#OFFERS = OFFERS;
     this.#DESTINATIONS = DESTINATIONS;
-    this._data = CreateEditPoint.parsePointToData(point);
+    this._data = EditPointView.parsePointToData(point);
 
     this.#setInnerHandlers();
   }
@@ -178,7 +176,7 @@ export default class CreateEditPoint extends SmartView {
 
   reset = (point) => {
     this.updateData(
-      CreateEditPoint.parsePointToData(point),
+      EditPointView.parsePointToData(point),
     );
   }
 
@@ -242,14 +240,14 @@ export default class CreateEditPoint extends SmartView {
       offers: this.#onOffersChange(),
     }, true);
 
-    this._callback.formSubmit(CreateEditPoint.parseDataToPoint(this._data));
+    this._callback.formSubmit(EditPointView.parseDataToPoint(this._data));
   }
 
   #onTypeChange = (evt) => {
     evt.preventDefault();
     this.updateData({
       type: evt.target.value,
-      offers: this.#OFFERS.length > 0 ? this.#OFFERS.find(({type}) => evt.target.value === type).offers : MOCK_OFFERS.find(({type}) => evt.target.value === type).offers,
+      offers: this.#OFFERS.length > 0 ? this.#OFFERS.find(({type}) => evt.target.value === type).offers : '',
     });
   }
 
@@ -258,9 +256,7 @@ export default class CreateEditPoint extends SmartView {
     const priceInput = this.getElement.querySelector('.event__input--destination');
     const saveBtn = this.getElement.querySelector('.event__save-btn');
 
-    const destinations = this.#DESTINATIONS.length > 0 ? this.#DESTINATIONS : MOCK_DESTINATIONS;
-
-    destinations.map((destination) => {
+    this.#DESTINATIONS.map((destination) => {
       const {name, description, pictures} = destination;
 
       if (name === evt.target.value) {
@@ -286,7 +282,7 @@ export default class CreateEditPoint extends SmartView {
 
   #onOffersChange = () => {
     const checkboxOffers = Array.from(this.getElement.querySelectorAll('.event__offer-checkbox'));
-    const currentPointType = this.#OFFERS.length > 0 ? this.#OFFERS.find((offer) => offer.type === this._data.type) : MOCK_OFFERS.find((offer) => offer.type === this._data.type);
+    const currentPointType = this.#OFFERS.find((offer) => offer.type === this._data.type);
     const checkedOffers = [];
     const offers = [];
 
@@ -355,7 +351,7 @@ export default class CreateEditPoint extends SmartView {
 
   #onFormDeleteClick = (evt) => {
     evt.preventDefault();
-    this._callback.deleteClick(CreateEditPoint.parseDataToPoint(this._data));
+    this._callback.deleteClick(EditPointView.parseDataToPoint(this._data));
   }
 
   static parsePointToData = (point) => ({
