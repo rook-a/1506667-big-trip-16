@@ -2,7 +2,7 @@ import EditPointView from '../view/edit-point-view.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 import {UserAction, UpdateType} from '../utils/const.js';
 
-export default class PointNewPresenter {
+export default class NewPointPresenter {
   #listPointContainer = null;
   #editPointComponent = null;
   #changeDate = null;

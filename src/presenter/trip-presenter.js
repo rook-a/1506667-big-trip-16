@@ -1,7 +1,7 @@
 import SortView from '../view/sort-view.js';
-import ListPoinView from '../view/list-point-view.js';
-import PointPresenter from './point-pressnter.js';
-import PointNewPresenter from './point-new-presenter.js';
+import ListPointView from '../view/list-point-view.js';
+import PointPresenter from './point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 import NoPointMessageView from '../view/no-point-message-view.js';
 import LoadingView from '../view/loading-view.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
@@ -12,7 +12,6 @@ import {blankPoint} from '../utils/blank-point.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
-  #tripFiltersContainer = null;
   #pointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
@@ -26,17 +25,16 @@ export default class TripPresenter {
   #currentSortType = DEFAULT_VALUE.sorting;
   #isLoading = true;
 
-  #listPointComponent = new ListPoinView();
+  #listPointComponent = new ListPointView();
 
-  constructor(tripEventsContainer, tripFiltersContainer, pointsModel, filterModel, offersModel, destinationsModel) {
+  constructor(tripEventsContainer, pointsModel, filterModel, offersModel, destinationsModel) {
     this.#tripEventsContainer = tripEventsContainer;
-    this.#tripFiltersContainer = tripFiltersContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
 
-    this.#pointNewPresenter = new PointNewPresenter(this.#listPointComponent, this.#makeOnViewAction);
+    this.#pointNewPresenter = new NewPointPresenter(this.#listPointComponent, this.#makeOnViewAction);
 
     this.#pointsModel.addObserver(this.#makeOnModelEvent);
     this.#filterModel.addObserver(this.#makeOnModelEvent);

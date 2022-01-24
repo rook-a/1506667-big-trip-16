@@ -29,7 +29,7 @@ const filterModel = new FilterModel();
 
 const tripInfoPresenter = new TripInfoPresenter(tripInfoContainer, pointsModel);
 const statisticsPresenter = new StatisticsPresenter(tripEventsContainer, pointsModel);
-const tripPresenter = new TripPresenter(tripEventsContainer, tripFiltersContainer, pointsModel, filterModel, offersModel, destinationsModel);
+const tripPresenter = new TripPresenter(tripEventsContainer, pointsModel, filterModel, offersModel, destinationsModel);
 const filterPresenter = new FilterPresenter(tripFiltersContainer, filterModel, pointsModel);
 
 const addButton = new AddButtonView();
